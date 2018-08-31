@@ -3,9 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.3.1.js" 
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" 
-    crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script language="javascript" type="text/javascript" src="libraries/p5.js"></script>
     <script language="javascript" src="libraries/p5.dom.js"></script>
     <script language="javascript" src="libraries/tracery.js"></script>
@@ -14,10 +12,12 @@
         body {
             padding: 20px;
         }
+
         .text {
             padding: 12px;
             /*background-color: #EEE;*/
         }
+
         #title {
             padding: 12px;
             background-color: #23C;
@@ -25,11 +25,28 @@
         }
     </style>
 </head>
+
 <body>
-    <p>
+    <div id="container">
+        <div id="content">
+            <h1>Tracery</h1>
+            <select id="grammarSelect">
+                <option value="scifi">Scifi Detective</option>
+                <option value="conference">New Media Conference</option>
+                <option value="nightvale">Eternal Nightvale</option>
+                <option value="poem">Poetry</option>
+                <option value="neverbar">Neverbar</option>
+            </select>
         <button id="generate" onclick="generate()">generate</button>
         <button id="clearAll" onclick="clearAll()">clear</button>
-    </p>
+        <input type="text" name="name"><br>
+        <!-- <form action="/action_page.php">
+            First name: <input type="text" name="fname"><br>
+            Last name: <input type="text" name="lname"><br>
+            <input type="submit" value="Submit">
+          </form> -->
+        </div>
+    </div>
 </body>
 
 </html>

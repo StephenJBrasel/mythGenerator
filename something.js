@@ -10,42 +10,302 @@ var grammar;
 
 // Here is the grammar
 var data = {
-  "start": ["#[hero:#character#][villain:#monster#]story#"],
-  "story": ["Once upon a time, there was #hero.a#. And that #hero# was very #adj#. And the #hero# liked #food#. The #hero# was very #adj#. Then the #hero# met a #adj# #adj# #villain#. And she killed the #villain#. #exclamation#. And then the #hero# ate the #food# and she was so #adj# and she was #adj# too today."],
-  "character": ["fairy", "unicorn", "dragon", "prince", "wolf", "princess", "bear"],
-  "adj": ['😎', '😍', '💚', "🔥", 'smart', 'pretty', 'smelly', 'funny', 'weird', 'happy', 'sad', 'angry'],
-  "food": ["🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🍎", "🍏", "🍐", "🍑", "🍒", "🍓", "🍅", "🍆", "🌽", "🌶", "🍄", "🌰", "🍞", "🧀", "🍖", "🍗", "🍔", "🍟", "🍕", "🌭", "🌮", "🌯", "🍳", "🍲", "🍿", "🍱", "🍘", "🍙", "🍚", "🍛", "🍜", "🍝", "🍠", "🍢", "🍣", "🍤", "🍥", "🍡", "🍦", "🍧", "🍨", "🍩", "🍪", "🎂", 'pizza', 'dumplings', 'hamburger', 'ice cream', 'french fries', 'salmon'],
-  "monster": ['dragon', 'dinosaur', 'chupacabra', 'jaguar', 'joker', 'voldemort'],
-  "exclamation": ['🙉', "🔥🔥🔥🔥🔥🔥🔥", 'Groooooooooan', 'Yahooooooooooo', 'Eeeeeeeeeeeeeeeek']
+    tale: {
+        "story": ["#[favoriteFood:#food#][hero:#character#][villain:#monster#]composition#"],
+        "composition": [
+            "#heroOrigin# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#",
+            "#heroOrigin# #heroDescription# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#",
+            "#heroOrigin# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#"
+        ],
+        "heroOrigin": [
+            "Once upon a time, there was #heroADJ.a# #hero#.",
+            "In the beginning, there was #hero.capitalize#.",
+            "On a #darkADJ# and #stormyADJ# night, #hero.a# appeared."],
+        "heroDescription": [
+            "And that #hero# was very #adj#.",
+            "And the #hero# liked #favoriteFood#.",
+            "The #hero# was very #adj#."
+        ],
+        "heroMeetsVillian": [
+            "Then the #hero# met a #adj# #adj# #villain#."
+        ],
+        "heroVSVillian": [
+            "And she killed the #villain#."
+        ],
+        "heroEnd": [
+            "And then the #hero# ate #favoriteFood# and she was so #adj# and she was #adj#."
+        ],
+        //1st adjective in list = adj.a if quantity = 1 else adj.some(?)
+        "adjectiveOrderList": [ //(2^numAdjCategories) - 1, 2^8-1 = 255
+            'quantity',
+            'opinion',
+            'size',
+            'age', //millenia, century, decade, year, month, week, day, 
+            // period(dawn, morning, afternoon, twilight, dusk, evening, night, witching hour, small hours), 
+            // hour, quarter(15 til), minute, second
+            'shape', //including height and weight
+            'colour',
+            'origin', //nationality/planetality/systemality
+            'material',
+            'purpose' // or qualifier
+        ],
+        "darkADJ": [
+            'dark',
+            'pitch-black',
+            'shadowy'],
+        "stormyADJ": [
+            'stormy',
+            'wild',
+            'blustery'],
+        "character": [
+            "fairy",
+            "#fantasyAnimalLarge#",
+            "#youngRoyalty#",
+            "#animalLarge#"],
+        "youngRoyalty": [
+            'princess',
+            'prince'
+        ],
+        "membersOfCourt": [
+            'knight',
+            'duchess',
+            'duke'
+        ],
+        "adj": [
+            '#goodADJ#',
+            '#emotiveADJ#',
+            '#badADJ#',
+            '#foodGoodADJ#'
+        ],
+        "goodADJ":[
+            '#intelligentADJ#',
+            '#strongADJ#',
+            '#robustADJ#', // High constitution
+            '#dextrousADJ#',
+            '#wiseADJ',
+            '#charismaticADJ#',
+            '#beautyADJ#',
+            '#funnyADJ#',
+            '#heroADJ#'
+        ],
+        "heroADJ":[
+            'brave',
+            'bold',
+            'amazing',
+            'incredible'
+        ],
+        "emotiveADJ":[
+            // anger, contempt, disgust, fear, joy, sadness and surprise
+            '#angryADJ#',
+            '#contemptADJ#',
+            '#disgustADJ#',
+            '#fearADJ#',
+            '#happyADJ#', 
+            '#sadADJ#',
+            '#surpriseADJ#'
+        ],
+        "badADJ":[
+            '#odourousADJ#',
+            '#weirdADJ#',
+            '#evilADJ#'
+        ],
+        "intelligentADJ": [
+            'smart',
+            'intelligent',
+            'witty',
+            'cunning'
+        ],
+        "strongADJ": [
+            'strong'
+        ],
+        "robustADJ": [
+            'robust',
+            'hardy'
+        ],
+        "dextrousADJ": [
+            'dextrous',
+            'limber'
+        ],
+        "wiseADJ": [
+            'wise'
+        ],
+        "charismaticADJ": [
+            'charismatic', 
+            'charming', 
+            'appealing', 
+            'influential', 
+            'entertaining',
+            'magnetic', 
+            'enticing', 
+            'alluring'
+        ],
+        "beautyADJ": [
+            'pretty',
+            'beautiful',
+            'attractive', 
+            'stunning',
+            'georgeuos'
+        ],
+        "funnyADJ": [
+            'funny',
+            'humorous'
+        ],
+        "angryADJ": [
+            'angry', 
+            'furious'
+        ],
+        "contemptADJ":[
+            'contemptuous'
+        ],
+        "disgustADJ":[
+            'disgusted'
+        ],
+        "fearADJ":[
+            'afraid',
+            'scared',
+            'terrified'
+        ],
+        "happyADJ": [
+            'happy',
+            'overjoyed'
+        ],
+        "sadADJ": [
+            'sad',
+            'morose'
+        ],
+        "surpriseADJ":[
+            'surprised'
+        ],
+        "foodGoodADJ": [
+            'delicious',
+            'delectable',
+            'scrumptious',
+            'tasty',
+            'sumptuous',
+            'savoury'
+        ],
+        "odourousADJ": [
+            'smelly',
+            'stinky',
+            'foul-smelling'],
+        "weirdADJ": [
+            'weird', 
+            'strange', 
+            'curious',
+            'odd', 
+            'perplexing'
+        ],
+        "evilADJ": [
+            'evil',
+            'wicked',
+            'malicious',
+            'malevolent',
+            'unholy',
+            'heinous',
+            'depraved',
+            'vile'
+        ],
+        "food": [
+            // '#soup#',
+            // '#entree#',
+            '#snack.s#'
+        ],
+        "entree": [
+            'steak',
+            'pork chop',
+            'shrimp',
+            'salmon'
+        ],
+        "snack": [
+            'pretzel',
+            'fry',
+            'chip'
+        ],
+        "soup": [
+            'soup',
+            'stew',
+            'broth',
+            'bisque',
+            'chowder'],
+        "monster": [
+            '#undeadMonster#',
+            '#dragonMonster#',
+            '#WereMonster#'],
+        "undeadMonster": [
+            'zombie',
+            'ghoul',
+            'ghost',
+            'wight',
+            'wraith',
+            'lich'],
+        "animalSmall": [
+            'rat',
+            'cat',
+            'dog',
+            'rabbit',
+            'lizard',
+            'spider',
+            'bee'
+        ],
+        "animalLarge": [
+            'wolf',
+            'bear',
+            'crocodile',
+            'alligator',
+            '#snake#', 
+            'giant squid'
+        ],
+        "snake": [
+            'python',
+            'cobra',
+            'anaconda'
+        ],
+        "fantasyAnimalLarge": [
+            'unicorn',
+            '#dragonMonster#'
+        ],
+        "WereMonster": [
+            'were#animalLarge#',
+            'vampire'
+        ],
+        "dragonMonster": [
+            'dragon',
+            'wyvern',
+            'drake',
+            'wyrm',
+            'hydra',
+            'serpent']
+    }
 }
 
 function setup() {
-  noCanvas();
-  // Make the grammar
-  grammar = tracery.createGrammar(data);
+    noCanvas();
+    var name = 'tale';
+    // Make the grammar
+    grammar = tracery.createGrammar(data[name]);
 
-  // A button to generate a new sentence
-//   var button = select('#generate');
-//   button.mousePressed(generate);
-  // A button to clear everything
-//   var clear = select('#clearAll');
-//   clear.mousePressed(clearAll);
+    // A button to generate a new sentence
+    //   var button = select('#generate');
+    //   button.mousePressed(generate);
+    // A button to clear everything
+    //   var clear = select('#clearAll');
+    //   clear.mousePressed(clearAll);
 }
 
 // Remove everything
 function clearAll() {
-  var elements = selectAll('.text');
-  for (var i = 0; i < elements.length; i++) {
-    elements[i].remove();
-  }
+    var elements = selectAll('.text');
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].remove();
+    }
 }
 
 function generate() {
-  var expansion = grammar.flatten('#start#');
-  var par = createP(expansion);
-  var r = floor(random(100, 255));
-  var g = floor(random(150, 255));
-  var b = floor(random(200, 255));
-  par.style('background-color', 'rgb(' + r + ',' + g + ',' + b + ')');
-  par.class('text');
+    var expansion = grammar.flatten('#story#');
+    var par = createP(expansion);
+    var r = floor(random(100, 255));
+    var g = floor(random(150, 255));
+    var b = floor(random(200, 255));
+    par.style('background-color', 'rgb(' + r + ',' + g + ',' + b + ')');
+    par.class('text');
 }
