@@ -35,20 +35,20 @@ var data = {
         "heroEnd": [
             "And then the #hero# ate #favoriteFood# and she was so #adj# and she was #adj#."
         ],
-        //1st adjective in list = adj.a if quantity = 1 else adj.some(?)
-        "adjectiveOrderList": [ //(2^numAdjCategories) - 1, 2^8-1 = 255
-            'quantity',
-            'opinion',
-            'size',
-            'age', //millenia, century, decade, year, month, week, day, 
-            // period(dawn, morning, afternoon, twilight, dusk, evening, night, witching hour, small hours), 
-            // hour, quarter(15 til), minute, second
-            'shape', //including height and weight
-            'colour',
-            'origin', //nationality/planetality/systemality
-            'material',
-            'purpose' // or qualifier
-        ],
+        // //1st adjective in list = adj.a if quantity = 1 else adj.some(?)
+        // "adjectiveOrderList": [ //(2^numAdjCategories) - 1, 2^8-1 = 255
+        //     'quantity',
+        //     'opinion',
+        //     'size',
+        //     'age', //millenia, century, decade, year, month, week, day, 
+        //     // period(dawn, morning, afternoon, twilight, dusk, evening, night, witching hour, small hours), 
+        //     // hour, quarter(15 til), minute, second
+        //     'shape', //including height and weight
+        //     'colour',
+        //     'origin', //nationality/planetality/systemality
+        //     'material',
+        //     'purpose' // or qualifier
+        // ],
         "darkADJ": [
             'dark',
             'pitch-black',
@@ -58,10 +58,12 @@ var data = {
             'wild',
             'blustery'],
         "character": [
-            "fairy",
+            "#fantasyAnimalSmall#",
             "#fantasyAnimalLarge#",
             "#youngRoyalty#",
-            "#animalLarge#"],
+            "#animalLarge#",
+            "#membersOfCourt#"
+        ],
         "youngRoyalty": [
             'princess',
             'prince'
@@ -74,8 +76,7 @@ var data = {
         "adj": [
             '#goodADJ#',
             '#emotiveADJ#',
-            '#badADJ#',
-            '#foodGoodADJ#'
+            '#badADJ#'
         ],
         "goodADJ":[
             '#intelligentADJ#',
@@ -176,14 +177,6 @@ var data = {
         "surpriseADJ":[
             'surprised'
         ],
-        "foodGoodADJ": [
-            'delicious',
-            'delectable',
-            'scrumptious',
-            'tasty',
-            'sumptuous',
-            'savoury'
-        ],
         "odourousADJ": [
             'smelly',
             'stinky',
@@ -205,9 +198,21 @@ var data = {
             'depraved',
             'vile'
         ],
-        "food": [
-            // '#soup#',
-            // '#entree#',
+        "foodGoodADJ": [
+            'delicious',
+            'delectable',
+            'scrumptious',
+            'tasty',
+            'sumptuous',
+            'savoury'
+        ],
+        "food":[
+            '#foodGroups#',
+            '#foodGoodADJ# #foodGroups#'
+        ],
+        "foodGroups": [
+            '#soup#',
+            '#entree#',
             '#snack.s#'
         ],
         "entree": [
@@ -230,7 +235,15 @@ var data = {
         "monster": [
             '#undeadMonster#',
             '#dragonMonster#',
-            '#WereMonster#'],
+            '#WereMonster#', 
+            '#humanMonster#'
+        ],
+        "humanMonster":[
+            'bandit',
+            'outlaw',
+            'thug',
+            'assassin'
+        ],
         "undeadMonster": [
             'zombie',
             'ghoul',
@@ -263,6 +276,9 @@ var data = {
         "fantasyAnimalLarge": [
             'unicorn',
             '#dragonMonster#'
+        ], 
+        "fantasyAnimalSmall":[
+            'fairy'
         ],
         "WereMonster": [
             'were#animalLarge#',
@@ -284,10 +300,10 @@ function setup() {
     // Make the grammar
     grammar = tracery.createGrammar(data[name]);
 
-    // A button to generate a new sentence
+    // // A button to generate a new sentence
     //   var button = select('#generate');
     //   button.mousePressed(generate);
-    // A button to clear everything
+    // // A button to clear everything
     //   var clear = select('#clearAll');
     //   clear.mousePressed(clearAll);
 }
