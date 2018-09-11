@@ -6,12 +6,15 @@
 // Tracery by Kate Compton
 // https://github.com/galaxykate/tracery
 
-var grammar;
+var grammar = [];
+var dude;
+var myth;
+// var tale;
 
 // Here is the grammar
-var data = {
-    tale: {
-        "story": ["#[favoriteFood:#food#][hero:#character#][villain:#monster#]composition#"],
+var data = [
+    tale = {
+        "origin": ["#[heroFavFood:#food#][hero:#character#][villain:#monster#]composition#"],
         "composition": [
             "#heroOrigin# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#",
             "#heroOrigin# #heroDescription# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#",
@@ -22,9 +25,9 @@ var data = {
             "In the beginning, there was #hero.capitalize#.",
             "On a #darkADJ# and #stormyADJ# night, #hero.a# appeared."],
         "heroDescription": [
-            "And that #hero# was very #adj#.",
-            "And the #hero# liked #favoriteFood#.",
-            "The #hero# was very #adj#."
+            // "That #hero# was very #heroADJ#.",
+            "The #hero# liked #heroFavFood#."
+            // "The #hero# was very #goodADJ#."
         ],
         "heroMeetsVillian": [
             "Then the #hero# met a #adj# #adj# #villain#."
@@ -33,7 +36,7 @@ var data = {
             "And she killed the #villain#."
         ],
         "heroEnd": [
-            "And then the #hero# ate #favoriteFood# and she was so #adj# and she was #adj#."
+            "And then the #hero# ate #heroFavFood# and she was so #adj# and she was #adj#."
         ],
         // //1st adjective in list = adj.a if quantity = 1 else adj.some(?)
         // "adjectiveOrderList": [ //(2^numAdjCategories) - 1, 2^8-1 = 255
@@ -49,6 +52,15 @@ var data = {
         //     'material',
         //     'purpose' // or qualifier
         // ],
+
+        "often": [
+            "rarely",
+            "never",
+            "often",
+            "almost always",
+            "always",
+            "sometimes"
+        ],
         "darkADJ": [
             'dark',
             'pitch-black',
@@ -78,7 +90,7 @@ var data = {
             '#emotiveADJ#',
             '#badADJ#'
         ],
-        "goodADJ":[
+        "goodADJ": [
             '#intelligentADJ#',
             '#strongADJ#',
             '#robustADJ#', // High constitution
@@ -89,23 +101,23 @@ var data = {
             '#funnyADJ#',
             '#heroADJ#'
         ],
-        "heroADJ":[
+        "heroADJ": [
             'brave',
             'bold',
             'amazing',
             'incredible'
         ],
-        "emotiveADJ":[
+        "emotiveADJ": [
             // anger, contempt, disgust, fear, joy, sadness and surprise
             '#angryADJ#',
             '#contemptADJ#',
             '#disgustADJ#',
             '#fearADJ#',
-            '#happyADJ#', 
+            '#happyADJ#',
             '#sadADJ#',
             '#surpriseADJ#'
         ],
-        "badADJ":[
+        "badADJ": [
             '#odourousADJ#',
             '#weirdADJ#',
             '#evilADJ#'
@@ -131,19 +143,19 @@ var data = {
             'wise'
         ],
         "charismaticADJ": [
-            'charismatic', 
-            'charming', 
-            'appealing', 
-            'influential', 
+            'charismatic',
+            'charming',
+            'appealing',
+            'influential',
             'entertaining',
-            'magnetic', 
-            'enticing', 
+            'magnetic',
+            'enticing',
             'alluring'
         ],
         "beautyADJ": [
             'pretty',
             'beautiful',
-            'attractive', 
+            'attractive',
             'stunning',
             'georgeuos'
         ],
@@ -152,16 +164,16 @@ var data = {
             'humorous'
         ],
         "angryADJ": [
-            'angry', 
+            'angry',
             'furious'
         ],
-        "contemptADJ":[
+        "contemptADJ": [
             'contemptuous'
         ],
-        "disgustADJ":[
+        "disgustADJ": [
             'disgusted'
         ],
-        "fearADJ":[
+        "fearADJ": [
             'afraid',
             'scared',
             'terrified'
@@ -174,7 +186,7 @@ var data = {
             'sad',
             'morose'
         ],
-        "surpriseADJ":[
+        "surpriseADJ": [
             'surprised'
         ],
         "odourousADJ": [
@@ -182,10 +194,10 @@ var data = {
             'stinky',
             'foul-smelling'],
         "weirdADJ": [
-            'weird', 
-            'strange', 
+            'weird',
+            'strange',
             'curious',
-            'odd', 
+            'odd',
             'perplexing'
         ],
         "evilADJ": [
@@ -206,7 +218,7 @@ var data = {
             'sumptuous',
             'savoury'
         ],
-        "food":[
+        "food": [
             '#foodGroups#',
             '#foodGoodADJ# #foodGroups#'
         ],
@@ -235,10 +247,10 @@ var data = {
         "monster": [
             '#undeadMonster#',
             '#dragonMonster#',
-            '#WereMonster#', 
+            '#WereMonster#',
             '#humanMonster#'
         ],
-        "humanMonster":[
+        "humanMonster": [
             'bandit',
             'outlaw',
             'thug',
@@ -265,7 +277,7 @@ var data = {
             'bear',
             'crocodile',
             'alligator',
-            '#snake#', 
+            '#snake#',
             'giant squid'
         ],
         "snake": [
@@ -276,8 +288,8 @@ var data = {
         "fantasyAnimalLarge": [
             'unicorn',
             '#dragonMonster#'
-        ], 
-        "fantasyAnimalSmall":[
+        ],
+        "fantasyAnimalSmall": [
             'fairy'
         ],
         "WereMonster": [
@@ -291,14 +303,79 @@ var data = {
             'wyrm',
             'hydra',
             'serpent']
+    },
+    hero = {
+        "name": [
+            "Cheri",
+            "Fox",
+            "Morgana",
+            "Jedoo",
+            "Brick",
+            "Shadow",
+            "Krox",
+            "Urga",
+            "Zelph"
+        ],
+        "story": [
+            "#hero.capitalize# was a great #occupation#, and this song tells of #heroTheir# adventure. #hero.capitalize# #didStuff#, then #heroThey# #didStuff#, then #heroThey# went home to read a book."
+        ],
+        "monster": [
+            "dragon",
+            "ogre",
+            "witch",
+            "wizard",
+            "goblin",
+            "golem",
+            "giant",
+            "sphinx",
+            "warlord"
+        ],
+        "setSingluarPronouns": ["[heroThey:she][heroThem:her][heroTheir:her][heroTheirs:hers]",
+            "[heroThey:he][heroThem:him][heroTheir:his][heroTheirs:his]"
+        ],
+        "setPluralPronouns": [
+            "[heroThey:they][heroThem:them][heroTheir:their][heroTheirs:theirs]",
+        ],
+        "setOccupation": [
+            "[occupation:baker]" +
+            "[didStuff:" +
+            "baked bread," +
+            "decorated cupcakes," +
+            "folded dough," +
+            "made croissants," +
+            "iced a cake]",
+            "[occupation:warrior]" +
+            "[didStuff:" +
+            "fought #monster.a#," +
+            "saved a village from #monster.a#," +
+            "battled #monster.a#," +
+            "defeated #monster.a#]"
+        ],
+        "origin": [
+            "#[#setSingluarPronouns#][#setOccupation#][hero:#name#]story#"
+        ]
     }
-}
+]
 
 function setup() {
     noCanvas();
-    var name = 'tale';
-    // Make the grammar
-    grammar = tracery.createGrammar(data[name]);
+    // var name = 'tale';
+    // // Make the grammar
+    // for(var i = 0; i < data.length; i++){
+    //     grammar[i] = tracery.createGrammar(data[i]);
+    // }
+    var textarea = document.getElementById("mainGrammar");
+    data[2] = JSON.parse(textarea.innerHTML);
+
+    grammar = tracery.createGrammar(data[2]);
+    // myth = new story();
+    textarea.innerHTML = JSON.stringify(data[2]);
+    // data.tale.foreach(elements => {
+    //     textarea.value += elements;
+    // })
+    // textarea.value = data.tale;
+
+    dude = new character();
 
     // // A button to generate a new sentence
     //   var button = select('#generate');
@@ -317,11 +394,34 @@ function clearAll() {
 }
 
 function generate() {
-    var expansion = grammar.flatten('#story#');
-    var par = createP(expansion);
+    // for (var i = 0; i < data.length; i++) {
+    var expansion = grammar.flatten('#origin#');
+    newParagraph(expansion);
+    // }
+}
+
+function newParagraph(value) {
+    var par = createP(value);
     var r = floor(random(100, 255));
     var g = floor(random(150, 255));
     var b = floor(random(200, 255));
     par.style('background-color', 'rgb(' + r + ',' + g + ',' + b + ')');
     par.class('text');
 }
+
+function inQuotes(s) {
+    return '"' + s + '"';
+}
+
+function JSON2string (jsonobject,prefix) {
+    if (!prefix) prefix="";
+    if (typeof(jsonobject)=="string") return jsonobject;
+    if (typeof(jsonobject)=="number") return jsonobject.toString();
+    if (typeof(jsonobject)=="object") {
+      var s=""
+      var newprefix="  "+prefix;
+      for (var i in jsonobject) s+=prefix+i+"="+JSON2string(jsonobject[i],newprefix)+"\n";
+      return s;
+    }
+    return "<unhandled>";
+  }
