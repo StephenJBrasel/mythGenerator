@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" 
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+    <script src="libraries/p5.js"></script>
+    <script src="libraries/p5.dom.js"></script>
+    <script src="libraries/tracery.js"></script>
+    <script src="main.js"></script>
+    <!-- <script src="classes/character.js"></script> -->
+    <!-- <script src="classes/myth.js"></script> -->
+    <style>
+        body {
+            padding: 20px;
+        }
+        .text {
+            padding: 12px;
+            /*background-color: #EEE;*/
+        }
+        #title {
+            padding: 12px;
+            background-color: #23C;
+            color: #FFF;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="content">
+            <h1>Tracery</h1>
+            <select id="grammarSelect">
+                <option value="hero">Hero</option>
+                <option value="tale">HeroV2</option>
+            </select>
+            <button id="generate" onclick="generate()">generate</button>
+            <button id="clearAll" onclick="clearAll()">clear</button>
+            <br>
+            <textarea 
+            class="grammarView" 
+            id="mainGrammar"
+            spellcheck="false"
+            onblur="loadTextArea()"
+            value="{}" 
+            cols="150" 
+            rows="6" 
+            style="z-index: auto; position: relative; line-height: 17.1429px; font-size: 12px; transition: none 0s ease 0s; background: transparent !important; width:100%; height: auto;">
+{"name":["Cheri","Fox","Morgana","Jedoo","Brick","Shadow","Krox","Urga","Zelph"],"story":["#hero.capitalize# was a great #occupation#, and this song tells of #heroTheir# adventure. #hero.capitalize# #didStuff#, then #heroThey# #didStuff#, then #heroThey# went home to read a book."],"monster":["dragon","ogre","witch","wizard","goblin","golem","giant","sphinx","warlord"],"setSingluarPronouns":["[heroThey:she][heroThem:her][heroTheir:her][heroTheirs:hers]","[heroThey:he][heroThem:him][heroTheir:his][heroTheirs:his]"],"setPluralPronouns":["[heroThey:they][heroThem:them][heroTheir:their][heroTheirs:theirs]"],"setOccupation":["[occupation:baker][didStuff:baked bread,decorated cupcakes,folded dough,made croissants,iced a cake]","[occupation:warrior][didStuff:fought #monster.a#,saved a village from #monster.a#,battled #monster.a#,defeated #monster.a#]"],"origin":["#[#setSingluarPronouns#][#setOccupation#][hero:#name#]story#"]}</textarea>
+<br>
+<details>
+    <summary>Wordfill Help</summary>
+    <table bgcolor="#339966" border="0" cellspacing="0" width="95%" align="center">
+        <tbody><tr><td> <table bgcolor="ffffff" cellpadding="10" cellspacing="0" border="0" width="100%">
+        <tbody><tr><td>
+        <center><b>Task</b></center></td><td><b><center>Example searches</center></b></td></tr>
+        <tr><td>· Find a word if you only know its definition</td> 
+        <td>
+        <a href="/thesaurus/?loc=revfp&amp;s=barrel%20maker">barrel maker</a>,
+        <a href="/thesaurus/?loc=revfp&amp;s=before%20the%20flood">before the flood</a>,
+        <a href="/thesaurus/?loc=revfp&amp;s=museum%20guide">museum guide</a>,<br>
+        <a href="/thesaurus/?loc=revfp&amp;s=search%20for%20food">search for food</a>,
+        <a href="/thesaurus/?loc=revfp&amp;s=urge%20to%20travel">urge to travel</a>,<br>
+        <a href="/thesaurus/?loc=revfp&amp;s=being%20tried%20twice%20for%20the%20same%20crime">being tried twice for the same crime</a>,<br>
+        <a href="/thesaurus/?loc=revfp&amp;s=when%20cancer%20spreads%20through%20the%20body">when cancer spreads through the body</a>,<br>
+        </td>
+        </tr>
+        <tr><td>· Explore synonyms and related concepts</td>
+        <td>
+        <a href="/thesaurus/?s=fancy&amp;loc=revfp">fancy</a>,
+        <a href="/thesaurus/?s=baseball&amp;loc=revfp">baseball</a>, 
+        <a href="/thesaurus/?s=clouds&amp;loc=revfp">clouds</a>,
+        <a href="/thesaurus/?s=twisty&amp;loc=revfp">twisty</a>,
+        <a href="/thesaurus/?s=push&amp;loc=revfp">push</a>
+        </td>
+        </tr>
+        <tr><td>· Generate a list of words in some category
+        </td><td>
+        <a href="/thesaurus/?s=large%20birds&amp;loc=revfp">large birds</a>, 
+        <a href="/thesaurus/?s=soft%20cheese&amp;loc=revfp">soft cheese</a>,
+        <a href="/thesaurus/?s=green%20fruit&amp;loc=revfp">green fruit</a>
+        </td>
+        </tr>
+        <tr><td>· Answer basic identification questions
+        </td><td>
+        <a href="/thesaurus/?s=what%20is%20the%20capital%20of%20vietnam&amp;loc=revfp">What is the capital of Vietnam</a><br>
+        <a href="/thesaurus/?loc=revfp&amp;s=who%20is%20Big%20Bird%27s%20friend%20on%20Sesame%20Street">Who is Big Bird's friend on Sesame Street</a><br>
+        <a href="/thesaurus/?s=what%20is%20the%20longest%20river%20in%20the%20world&amp;loc=revfp">What is the longest river in the world?</a>
+        </td>
+        </tr>
+        <tr><td>· Solve crossword puzzle clues, or find words if you only know some of the letters<br>
+        &nbsp;&nbsp;(Use  <tt><a href="/?c=faq#patterns">pattern</a><b>:</b>clue</tt>  syntax)
+        </td><td>
+        <a href="/thesaurus/?loc=revfp&amp;s=%3F%3Flon%3Asynthetic%20fabric">??lon:synthetic fabric</a>,
+        <a href="/thesaurus/?loc=revfp&amp;s=s%3Fnt%3F%3Achristmas">s?nt?:christmas</a>,
+        <a href="/thesaurus/?loc=revfp&amp;s=l*ch*%3Afruit">l*ch*:fruit</a>,
+        <a href="/thesaurus/?loc=revfp&amp;s=%3F%3F%3F%3F%3F%3F%3Ahit">??????:hit</a>,
+        <a href="/thesaurus/?loc=revfp&amp;s=c*%3Aboard%20game">c*:board game</a>
+        </td></tr>
+        </tbody></table>
+        </td></tr></tbody></table>
+</details>
+        </div>
+    </div>
+</body>
+
+</html>

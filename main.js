@@ -6,19 +6,20 @@
 // Tracery by Kate Compton
 // https://github.com/galaxykate/tracery
 
-var grammar = [];
-var dude;
-var myth;
-// var tale;
+// import JSONFormatter from 'json-formatter-js';
+// var jsonFormat = require('./node_modules/json-format');
+// var fs = require('fs');
 
-// Here is the grammar
+var grammar = [];
+var url;
+var textarea;
 var data = [
     tale = {
         "origin": ["#[heroFavFood:#food#][hero:#character#][villain:#monster#]composition#"],
         "composition": [
-            "#heroOrigin# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#",
-            "#heroOrigin# #heroDescription# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#",
-            "#heroOrigin# #heroDescription# #heroMeetsVillian# #heroVSVillian# #heroEnd#"
+            "#heroOrigin# #heroDescription# #heroMeetsVillain# #heroVSVillain# #heroEnd#",
+            "#heroOrigin# #heroDescription# #heroDescription# #heroMeetsVillain# #heroVSVillain# #heroEnd#",
+            "#heroOrigin# #heroDescription# #heroMeetsVillain# #heroVSVillain# #heroEnd#"
         ],
         "heroOrigin": [
             "Once upon a time, there was #heroADJ.a# #hero#.",
@@ -29,30 +30,15 @@ var data = [
             "The #hero# liked #heroFavFood#."
             // "The #hero# was very #goodADJ#."
         ],
-        "heroMeetsVillian": [
+        "heroMeetsVillain": [
             "Then the #hero# met a #adj# #adj# #villain#."
         ],
-        "heroVSVillian": [
+        "heroVSVillain": [
             "And she killed the #villain#."
         ],
         "heroEnd": [
             "And then the #hero# ate #heroFavFood# and she was so #adj# and she was #adj#."
         ],
-        // //1st adjective in list = adj.a if quantity = 1 else adj.some(?)
-        // "adjectiveOrderList": [ //(2^numAdjCategories) - 1, 2^8-1 = 255
-        //     'quantity',
-        //     'opinion',
-        //     'size',
-        //     'age', //millenia, century, decade, year, month, week, day, 
-        //     // period(dawn, morning, afternoon, twilight, dusk, evening, night, witching hour, small hours), 
-        //     // hour, quarter(15 til), minute, second
-        //     'shape', //including height and weight
-        //     'colour',
-        //     'origin', //nationality/planetality/systemality
-        //     'material',
-        //     'purpose' // or qualifier
-        // ],
-
         "often": [
             "rarely",
             "never",
@@ -359,33 +345,20 @@ var data = [
 
 function setup() {
     noCanvas();
-    // var name = 'tale';
-    // // Make the grammar
-    // for(var i = 0; i < data.length; i++){
-    //     grammar[i] = tracery.createGrammar(data[i]);
-    // }
-    var textarea = document.getElementById("mainGrammar");
-    data[2] = JSON.parse(textarea.innerHTML);
+    loadTextArea();
+    //https://stackoverflow.com/questions/3515523/javascript-how-to-generate-formatted-easy-to-read-json-straight-from-an-object
+    textarea.innerHTML = JSON.stringify(data[2], null, '\t');
 
-    grammar = tracery.createGrammar(data[2]);
-    // myth = new story();
-    textarea.innerHTML = JSON.stringify(data[2]);
-    // data.tale.foreach(elements => {
-    //     textarea.value += elements;
-    // })
-    // textarea.value = data.tale;
-
-    dude = new character();
-
-    // // A button to generate a new sentence
-    //   var button = select('#generate');
-    //   button.mousePressed(generate);
-    // // A button to clear everything
-    //   var clear = select('#clearAll');
-    //   clear.mousePressed(clearAll);
+    url = 'https://api.datamuse.com/words?ml=ringing+in+the+ears&max=4';
+    loadJSON(url, obtainedData);
 }
 
-// Remove everything
+function loadTextArea(){
+    textarea = document.getElementById("mainGrammar");
+    data[2] = JSON.parse(textarea.value);
+    grammar = tracery.createGrammar(data[2]);
+}
+
 function clearAll() {
     var elements = selectAll('.text');
     for (var i = 0; i < elements.length; i++) {
@@ -394,10 +367,8 @@ function clearAll() {
 }
 
 function generate() {
-    // for (var i = 0; i < data.length; i++) {
     var expansion = grammar.flatten('#origin#');
     newParagraph(expansion);
-    // }
 }
 
 function newParagraph(value) {
@@ -409,19 +380,23 @@ function newParagraph(value) {
     par.class('text');
 }
 
-function inQuotes(s) {
-    return '"' + s + '"';
+function obtainedData(data){
+    console.log(JSON.stringify(data));
+    var holder = document.createElement("TEXTAREA")
+    const formatter = document.createTextNode(JSON.stringify(data, null, '\t'));
+    holder.appendChild(formatter);
+    holder.style = ("z-index: auto; position: relative; line-height: 17.1429px; font-size: 12px; transition: none 0s ease 0s; background: transparent !important; width:100%; height: auto;");
+    document.body.appendChild(holder);
+    // newParagraph(JSON.stringify(data, null, 3));
+    // return data;
 }
 
-function JSON2string (jsonobject,prefix) {
-    if (!prefix) prefix="";
-    if (typeof(jsonobject)=="string") return jsonobject;
-    if (typeof(jsonobject)=="number") return jsonobject.toString();
-    if (typeof(jsonobject)=="object") {
-      var s=""
-      var newprefix="  "+prefix;
-      for (var i in jsonobject) s+=prefix+i+"="+JSON2string(jsonobject[i],newprefix)+"\n";
-      return s;
-    }
-    return "<unhandled>";
-  }
+function createDetails(){
+    var holder = document.createElement("DETAILS");
+    var summary = document.createElement("SUMMARY");
+    summary.innerHTML = "Help";
+    var paragraph = document.createElement("P");
+    holder.appendChild(summary);
+    holder.appendChild(paragraph);
+
+}

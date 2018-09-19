@@ -1,0 +1,321 @@
+Procedural Generation Techniques in games
+
+First tool{
+	Constructive Method
+		Spelunky level generation algorithm
+		AD&D Dungeon Generation system.
+		
+		Piece together random blocks
+		Direct rand via
+			Knowledge rep
+			Altering dist
+			Indirect, lookup tables.
+		"Let's just hack something together."
+		Customized to the design of specific game.
+		Simple to author customization
+		repetitiveness
+	Grammars
+		Build something that builds something that builds something.
+		Specify ontology, axioms, set of production rules.
+		Rules determine how symbols are expanded.
+		L-Systems.
+		Quests, dungeons, caves, etc...
+		Power - easy to author chunks of content, surprisingly complex structures.
+		over- and under generating.
+		design guarantees declarative
+		translating to constraints is difficult.
+		debugging is painful
+	Constraint-Based Systems
+		Build something, stop when you hit a point.
+		Variation Forever
+		Educational puzzle game called Refraction
+		Define domain in terms of variables and numerical and/or logical constraints.
+		Off-the shelter solver.
+		"I need to meet hard design constraints and I love logic programming."
+		Specify what you WANT, what you DON'T WANT.
+		need to express entire domain in logic. 
+		Can make promises about design issues.
+			Solvability/ validity.
+			Player experience.
+		Flexible, general-purpose.
+		Scalability depends on domain representation
+		Debugging is difficult.
+	Optimization
+		City Conquest
+		Yavalath
+		Angelina: generates complete games.
+		
+		Also known as search-based PCG
+		Use an evolutionary algorithm to evolve the content.
+		Fitness function: "goodness" of content
+			Difficult
+		Representation: creates a search space where good content can be found.
+		Quite a lot of sophistication.
+		Extremely general, requires little domain knowledge, finds unexpected solutions
+		Can be very slow.
+		Scalable - from creating new rules to creating new games.
+	
+	
+	Mix-and-Match
+		Optimization and grammars
+		Constraints and grammars
+		Optimization and constraints
+		multi-layer constructive.
+
+	What do you care about?
+		Building Blocks
+			Authored Chunks/Pre-made bits.
+			Templates
+			Components
+			Subcomponents
+		Game Stage
+			Online
+			Offline
+			RealTime
+		Player Interavtion
+			None
+			Paramaterized
+			Indirect
+			Direct
+		Design Control
+			Indirect
+			Compositional
+			Experiential
+	Data Vs Process
+		Where do you place authorial control?
+			Authored Chunks/Template - 
+				Data oriented.
+				good with Grammars
+			Components/Subcomponents - 
+				Process Oriented
+				Fitting a Designer/Artist into an algorithm.
+				good with Evolutionary Algorithm or Constraint based systems.
+	Algorithm Speed
+		Online/Real Time
+			Speed is paramount
+			Human-In-The-Loop
+			Grammars, Constructive Systems, SOME Constraint systems.
+		Offline
+			Flexible in algorithm choice
+			Automated Curation
+	What About The Players?
+	Type of control dictates algorithm choice.
+		None
+		paramaterized
+		Indirect
+		Direct 
+		Indirect
+		Compositional
+		Experiential
+}
+		
+Caves of Qud{
+	state machines
+		Slider between war and peace?
+	grammars
+		political representation
+			Dictatorship
+			Democracy
+			Republic
+	"Then we discuss the system’s salient features, including 
+		the lack of expected causality, 
+		the parameterization of historical events, 
+		the emergence of coherent narratives, 
+		event branching, and 
+		the use of a replacement grammar to generate historical description."
+	Example: 
+		Acting against #injustice#, #sultanName# led an
+		army to the gates of #location#.
+			When determining how to replace #injustice#, the event examines
+			the sultan’s properties for meaningful state. If, for instance 
+			the sultan has any allied animal factions—say, frogs—#injustic# 
+			may be replaced with “the persecution of frogs”. In this way, 
+			the event’s effect precedes its cause. When the sultan’s state 
+			fails to produce a suitable cause, the event can even create one
+			by, say, altering the sultan’s allied factions property to 
+			include frogs and performing the substitution described above. 
+			In these cases there’s a full reversal of the expected causality
+			; the effect causes the cause.
+}
+MythGenerator{}
+MythGen{
+	uni = new Universe(fantasySetting)
+	uni.newEntities()
+		//Generate Universe Properties
+	while(playerInput != stop){
+		currEvent = NextEvent()
+		ReseolveEvent(currEvent, uni, Entities)
+		Update()
+		GetPlayerInput()
+	}
+}
+
+class Universe(){
+	private:
+	//These represent the types of possible things, not their lists.
+	Size size
+	Races races
+	Cultures cultures
+	Factions factions
+	People #Data Structure# intelligentPeople
+	MagicSystem Magic = NULL;
+	Places places
+	Items items
+	
+	public:
+	Universe(){
+		
+	}
+}
+}
+
+SolutionsBasedPlanning(){ (from http://wikis.sub.uni-hamburg.de/lhn/index.php/Story_Generator_Algorithms)
+	Methods
+		perpetual reformation of universe state/goals.
+		forward-chaining(from events to consequences)
+		backward-chaining(from goals to current state)
+		planning Stage
+			keeps track of a set of pending goals which drive the expansion of a partial draft of the story until a complete plot is obtained.
+		Possible Implementations
+			Characters, (#adjectiveSet# Noun)
+				person, (Proper Name/Betty White)
+				animal, (cat)
+				place/location, (Omaha/beach)
+				action, (skills(dancing))
+				Thing, (book)
+				(combination of) state(s)/condition(s)/circumstance(s) (being/party/vacation/summer break/new semester)
+				quality, (softness)
+				idea, (justice)
+			Plot,
+				constraining OR constructive OR maintaining goals
+				goal of character(s) (maintain or change)
+					thing(book, throne, sword)
+						STAY_ALIVE	
+						MAINTAIN_ENTITY_STATUS	
+						RULE_THE_(POWER_STRUCTURE/PLACE)	dreams of ruling the world
+						BRING_#IDEAL#_TO_THE_#PERSON/PLACE#	dreams of bringing (lasting) #ideal#(peace, war, religion, value) to the person/place (world)
+						BECOME_A_LEGENDARY_#OCCUPATION#	dreams of becoming a legendary #occupation#(warrior, smith)
+					person/animal (from http://dwarffortresswiki.org/index.php/DF2014:Personality_trait)
+						STAY_ALIVE	
+						MAINTAIN_ENTITY_STATUS	
+						START_A_FAMILY	dreams of raising a family	Goal completed upon giving birth/fathering an infant.
+						RULE_THE_(POWER_STRUCTURE/PLACE)	dreams of ruling the world
+						CREATE_A_GREAT_WORK_OF_ART	dreams of creating a great work of art	Goal completed upon creation of Artifact or Masterpiece
+						CRAFT_A_MASTERWORK	dreams of crafting a masterwork someday	Goal completed upon creation of Artifact or Masterpiece
+						BRING_#IDEAL#_TO_THE_#PERSON/PLACE#	dreams of bringing lasting #ideal#(peace, war, religion, value) to the person/place (world)
+						BECOME_A_LEGENDARY_#OCCUPATION#	dreams of becoming a legendary #occupation#(warrior, smith)
+						MASTER_A_SKILL	dreams of mastering a skill	Goal completed upon reaching Legendary skill status.
+						EXPERIENCE_#IDEAL#	dreams of experiencing(falling in) an ideal state (love)
+						SEE_THE_GREAT_NATURAL_SITES	dreams of seeing the great (natural) places of the world
+						IMMORTALITY	to remain, to be forever. 
+							ascension to godhood
+							necromancy
+							immortalized in story.
+						DISCOVER_NEW_#NOUN#	learn new knowledge, discover new places, meet new people,
+							new to you, to society, to your people
+					place/location ()
+						STAY_ALIVE	
+						MAINTAIN_ENTITY_STATUS	
+						BECOME_CENTER_OF_#IDEA# (center of trade, politics, education, technology, culture)
+					quality
+						STAY_ALIVE	
+						MAINTAIN_ENTITY_STATUS	
+						BRING_#IDEAL#_TO_THE_#PERSON/PLACE#	dreams of bringing lasting #ideal#(peace, war, religion, value) to the person/place (world)
+					idea
+						STAY_ALIVE	
+						MAINTAIN_ENTITY_STATUS	
+						BRING_#IDEAL#_TO_THE_#PERSON/PLACE#	dreams of bringing lasting #ideal#(peace, war, religion, value) to the person/place (world)
+					action
+						STAY_ALIVE	
+						MAINTAIN_ENTITY_STATUS	
+						BRING_#IDEAL#_TO_THE_#PERSON/PLACE#	dreams of bringing lasting #ideal#(peace, war, religion, value) to the person/place (world)
+					state
+						STAY_ALIVE	
+						MAINTAIN_ENTITY_STATUS	
+						BECOME_A_LEGENDARY_#OCCUPATION#	dreams of becoming a legendary #occupation#(warrior, smith)
+			Settings, 
+				place/location with a full (somewhat realistic) description of the environment
+			Themes
+				(combination of) state(s)/condition(s)/circumstance(s) (being/party/time)
+				Moral judgments/lessons
+				Central Idea
+			Conflicts, 
+				thing cannot be thing,
+				person/animal restricted/inhibited from living, thinking, cannot do goal
+				place/location is decaying, being destroyed OR forgotten
+				quality is being devalued OR forgotten OR demeaned OR denigrated
+				idea is losing influence
+				action is (degree of (moderately, severely)) inhibited from being performed
+				state is changing for (perceived) worse
+			Resolutions
+				and that's okay. (meh ending)
+				conflict avoided
+				conflict (#level of resolution(mitigated, resolved, disappeared, )#) 
+					AND change occurred.
+					BUT change occurred.
+				conflict occurred
+					character changed.
+	Solutions
+		Definition:
+			take as input a state of the world
+			work either backwards towards current state or forwards towards goal state
+			to produce a sequence of events that will lead from one to the other.
+		Solution Types
+			Authorial - what the author wants to tell.
+				ABOUT_IDEAL
+				WITH_MORAL
+				STYLE
+				CONTENT
+				READING_LEVEL
+				TARGET_AUDIENCE
+					COMPREHENSION_LEVEL
+					STATE/CIRCUMSTANCE/CONDITION
+					GOALS
+			Reader goals - Authorial goal is to satisfy the reader, 
+				reader metrics 
+					in _#author# style, (similar to https://deepdreamgenerator.com/ but for authors)
+					metrical structure (ballad, 3 part play, poem, haiku, generic story, etc.)
+						syllables per WORD_GROUP (line, paragraph, sentence)
+						rhyming scheme 
+							(by line, sentence, word, paragraph)
+							N-N-Group(N-N-ary words)
+					about _#noun(s)#, 
+					with _#noun(s)# in it, 
+					_#rational num# many pages, 
+					at a _ reading level, 
+						(from 
+							https://lexile.com/for-researchers/
+							https://www.scholastic.com/teachers/articles/teaching-content/leveled-reading-systems-explained/)
+						Vocabulary and word choice
+						Sentence length and complexity
+						The length of the book
+						Subject matter
+						Repetition and predictability
+						-Picture support (on the to-do list!)
+						Age appropriateness and Interest level
+			Character goals - what the characters in the story want to do.
+			no goals - deterministic universe.
+				Things happen because _, _, ..., and _ happened.
+		Intent-Driven Partial Order Causal Link (IPOCL)
+			simultaneously reasoned about causality and character [deliberation/purposive-ness] and motivation in order to produce narrative sequences that are causally coherent (in the sense that they drive towards a conclusion) (→ Coherence) and have elements of character believability. 
+			Fabulist first generates a narrative plan that meets the outcome objective, ensuring that all character actions and goals are justified by events within the narrative itself.
+}
+
+1st adjective in list = adj.a if quantity = 1 else adj.some(?)
+"adjectiveOrderList": [ //(2^numAdjCategories) - 1, 2^8-1 = 255
+		'quantity',
+		'opinion',
+		'size',
+		'age', //millenia, century, decade, year, month, week, day, 
+		// period(dawn, morning, afternoon, twilight, dusk, evening, night, witching hour, small hours), 
+		// hour, quarter(15 til), minute, second
+		'shape', //including height and weight
+		'colour',
+		'origin', //nationality/planetality/systemality
+		'material',
+		'purpose' // or qualifier
+	],
+
+
+Something
+Else
