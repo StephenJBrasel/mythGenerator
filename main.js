@@ -386,13 +386,17 @@ function buildSelector(){
 }
 
 function changeCurrentView(){
+    hideAllViews();
+    var viewSelector = document.getElementById("viewSelect");
+    var selectedValue = viewSelector.value;
+    document.getElementById(selectedValue).style.display = "block";
+}
+
+function hideAllViews() {
     var elements = document.getElementsByClassName("view");
     for (var i = 0; i < elements.length; i++) {
         elements[i].style.display = "none";
     }
-    var viewSelector = document.getElementById("viewSelect");
-    var selectedValue = viewSelector.value;
-    document.getElementById(selectedValue).style.display = "block";
 }
 
 function changeCurrentDirectory() {
