@@ -11,9 +11,66 @@
 // var fs = require('fs');
 
 var grammar = [];
-var url;
-var textarea;
+var url = 'https://api.datamuse.com/';
+var JSONViewTextArea;
+var x = 0;
+var elementNumber = 0; //Used to keep track of how many elements are in a grammar when generating new elements
+var totalGrammarAmount = 4;
 var data = [
+    myth = {
+        "origin": [],
+    },
+    hero = {
+        "name": [
+            "Cheri",
+            "Fox",
+            "Morgana",
+            "Jedoo",
+            "Brick",
+            "Shadow",
+            "Krox",
+            "Urga",
+            "Zelph"
+        ],
+        "story": [
+            "#hero.capitalize# was a great #occupation#, and this song tells of #heroTheir# adventure. #hero.capitalize# #didStuff#, then #heroThey# #didStuff#, then #heroThey# went home to read a book."
+        ],
+        "monster": [
+            "dragon",
+            "ogre",
+            "witch",
+            "wizard",
+            "goblin",
+            "golem",
+            "giant",
+            "sphinx",
+            "warlord"
+        ],
+        "setSingluarPronouns": ["[heroThey:she][heroThem:her][heroTheir:her][heroTheirs:hers]",
+            "[heroThey:he][heroThem:him][heroTheir:his][heroTheirs:his]"
+        ],
+        "setPluralPronouns": [
+            "[heroThey:they][heroThem:them][heroTheir:their][heroTheirs:theirs]",
+        ],
+        "setOccupation": [
+            "[occupation:baker]" +
+            "[didStuff:" +
+            "baked bread," +
+            "decorated cupcakes," +
+            "folded dough," +
+            "made croissants," +
+            "iced a cake]",
+            "[occupation:warrior]" +
+            "[didStuff:" +
+            "fought #monster.a#," +
+            "saved a village from #monster.a#," +
+            "battled #monster.a#," +
+            "defeated #monster.a#]"
+        ],
+        "origin": [
+            "#[#setSingluarPronouns#][#setOccupation#][hero:#name#]story#"
+        ]
+    },
     tale = {
         "origin": ["#[heroFavFood:#food#][hero:#character#][villain:#monster#]composition#"],
         "composition": [
@@ -290,77 +347,110 @@ var data = [
             'hydra',
             'serpent']
     },
-    hero = {
-        "name": [
-            "Cheri",
-            "Fox",
-            "Morgana",
-            "Jedoo",
-            "Brick",
-            "Shadow",
-            "Krox",
-            "Urga",
-            "Zelph"
-        ],
-        "story": [
-            "#hero.capitalize# was a great #occupation#, and this song tells of #heroTheir# adventure. #hero.capitalize# #didStuff#, then #heroThey# #didStuff#, then #heroThey# went home to read a book."
-        ],
-        "monster": [
-            "dragon",
-            "ogre",
-            "witch",
-            "wizard",
-            "goblin",
-            "golem",
-            "giant",
-            "sphinx",
-            "warlord"
-        ],
-        "setSingluarPronouns": ["[heroThey:she][heroThem:her][heroTheir:her][heroTheirs:hers]",
-            "[heroThey:he][heroThem:him][heroTheir:his][heroTheirs:his]"
-        ],
-        "setPluralPronouns": [
-            "[heroThey:they][heroThem:them][heroTheir:their][heroTheirs:theirs]",
-        ],
-        "setOccupation": [
-            "[occupation:baker]" +
-            "[didStuff:" +
-            "baked bread," +
-            "decorated cupcakes," +
-            "folded dough," +
-            "made croissants," +
-            "iced a cake]",
-            "[occupation:warrior]" +
-            "[didStuff:" +
-            "fought #monster.a#," +
-            "saved a village from #monster.a#," +
-            "battled #monster.a#," +
-            "defeated #monster.a#]"
-        ],
-        "origin": [
-            "#[#setSingluarPronouns#][#setOccupation#][hero:#name#]story#"
-        ]
+    quest = {
+        "origin": [],
     }
 ]
+var currentDirectory;
 
 function setup() {
     noCanvas();
-    loadTextArea();
-    //https://stackoverflow.com/questions/3515523/javascript-how-to-generate-formatted-easy-to-read-json-straight-from-an-object
-    textarea.innerHTML = JSON.stringify(data[2], null, '\t');
+    //Set a "working" directory so we don't inadvertently delete everything while testing.
+    // buildSelector();
+    currentDirectory = data[0];
+    JSONViewTextArea = document.getElementById("JSONViewTextArea");
+    //Establish the grammar.
+    resetWorkingData();
+    fillViews();
 
-    url = 'https://api.datamuse.com/words?ml=ringing+in+the+ears&max=4';
+    url += 'words?ml=ringing+in+the+ears&max=4';
     loadJSON(url, obtainedData);
 }
 
-function loadTextArea(){
-    textarea = document.getElementById("mainGrammar");
-    data[2] = JSON.parse(textarea.value);
-    grammar = tracery.createGrammar(data[2]);
+function buildSelector(){
+    var selector = document.getElementById("grammarSelect");
+    clearClassesOrTags('.GrammarTypeOptions');
+    var option;
+    for (var i = 0; i < data.length; i++){
+        option = document.createElement("OPTION");
+        option.classList.add("GrammarTypeOptions");
+        option.value = i;
+        option.innerHTML = JSON.stringify(data[i]);
+        selector.appendChild(option);
+    }
+    option = document.createElement("OPTION");
+    option.classList.add("GrammarTypeOptions");
+    option.value="new";
+    option.innerHTML="New";
+    selector.appendChild(option);
 }
 
-function clearAll() {
-    var elements = selectAll('.text');
+function changeCurrentView(){
+    var elements = document.getElementsByClassName("view");
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
+    }
+    var viewSelector = document.getElementById("viewSelect");
+    var selectedValue = viewSelector.value;
+    document.getElementById(selectedValue).style.display = "block";
+}
+
+function changeCurrentDirectory() {
+    var selector = document.getElementById("grammarSelect");
+    var selectedValue = selector.value;
+    var isNum = /^\d+$/.test(selectedValue);
+    console.log(isNum);
+    if (isNum) {
+        currentDirectory = data[selectedValue];
+    } else {
+        var newGrammar = 
+        dataKey = "data" + totalGrammarAmount;
+        data[totalGrammarAmount] = {[dataKey]:[]}
+        currentDirectory = data[totalGrammarAmount++]; //?
+    }
+    deleteAllGrammarElements(false);
+    resetWorkingData();
+    fillViews();
+}
+
+function fillViews() {
+    fillJSONTextArea();
+    fillElements();
+}
+
+function fillElements() {
+    for (element in currentDirectory) {
+        var arr = currentDirectory[element];
+        var newString = arr.length === 0 ? "" : '"' + arr.join('",\n"') + '"';
+        makeElementView(element, newString);
+    }
+}
+
+function fillJSONTextArea() {
+    JSONViewTextArea.innerHTML = JSON.stringify(currentDirectory, null, '\t');
+}
+
+function resetWorkingDataJSON() { //onblur from JSON textarea
+    currentDirectory = JSON.parse(JSONViewTextArea.value);
+    deleteAllGrammarElements(false);
+    fillElements();
+    resetWorkingData();
+}
+
+function resetWorkingDataElements() {
+    //TODO
+    //set currentDirectory to JSON-parsed elements
+    // make new javascript object. populate it.
+    // set currentDirectory to object.
+    resetWorkingData();
+}
+
+function resetWorkingData() {
+    grammar = tracery.createGrammar(currentDirectory);
+}
+
+function clearClassesOrTags(search = '.generatedText') {
+    var elements = selectAll(search);
     for (var i = 0; i < elements.length; i++) {
         elements[i].remove();
     }
@@ -371,32 +461,88 @@ function generate() {
     newParagraph(expansion);
 }
 
+function makeElementView(InputText = "", AreaText = "") {
+    elementDivision = document.getElementById("elements");
+
+    newDiv = document.createElement("DIV");
+    newDiv.classList.add("elementView");
+    var id = ("element" + elementNumber++);
+    newDiv.id = id;
+
+    textInput = document.createElement("INPUT");
+    textInput.type = "text";
+    textInput.placeholder = "Element";
+    textInput.id = ("input_" + id);
+    textInput.value = InputText;
+
+    newTextArea = document.createElement("TEXTAREA");
+    newTextArea.classList.add("grammarView");
+    newTextArea.placeholder = "thing1, thing2, thingRed, thingBlue";
+    newTextArea.value = AreaText;
+
+    deleteButton = document.createElement("BUTTON");
+    // deleteButton.onclick = deleteElement();
+    deleteButton.setAttribute("onclick", "deleteGrammarElement('" + id + "')");
+    deleteButton.innerHTML = "X";
+
+    newDiv.appendChild(textInput);
+    newDiv.appendChild(document.createTextNode(":"));
+    newDiv.appendChild(newTextArea);
+    newDiv.appendChild(deleteButton);
+
+    elementDivision.appendChild(newDiv);
+}
+
+function deleteAllGrammarElements(modifyCurrentDirectory = "true") {
+    for (var i = 0; i < elementNumber; i++) {
+        deleteGrammarElement("element" + i, modifyCurrentDirectory);
+    }
+    elementNumber = 0;
+}
+
+function deleteGrammarElement(search, modifyCurrentDirectory = "true") {
+    var toDelete = document.getElementById(search);
+    if (document.getElementById("input_" + search) != null) {
+        // console.log(document.getElementById("input_" + search).value);
+        if (modifyCurrentDirectory) {
+            delete currentDirectory[document.getElementById("input_" + search).value];
+        }
+        toDelete.remove();
+    }
+    //TODO
+    //refresh other views, generation tools.
+}
+
 function newParagraph(value) {
-    var par = createP(value);
+    var holder = document.createElement("P");
+    var par = document.createTextNode(value);
+    holder.appendChild(par);
     var r = floor(random(100, 255));
     var g = floor(random(150, 255));
     var b = floor(random(200, 255));
-    par.style('background-color', 'rgb(' + r + ',' + g + ',' + b + ')');
-    par.class('text');
+    holder.setAttribute('style', 'background-color:rgb(' + r + ',' + g + ',' + b + ');');
+    holder.classList.add('generatedText');
+    holder.setAttribute("contenteditable", "true");
+    document.body.appendChild(holder);
 }
 
-function obtainedData(data){
-    console.log(JSON.stringify(data));
+function obtainedData(data) {
+    // console.log(JSON.stringify(data));
     var holder = document.createElement("TEXTAREA")
     const formatter = document.createTextNode(JSON.stringify(data, null, '\t'));
     holder.appendChild(formatter);
-    holder.style = ("z-index: auto; position: relative; line-height: 17.1429px; font-size: 12px; transition: none 0s ease 0s; background: transparent !important; width:100%; height: auto;");
+    holder.rows = 6;
+    holder.classList.add("grammarView");
     document.body.appendChild(holder);
     // newParagraph(JSON.stringify(data, null, 3));
     // return data;
 }
 
-function createDetails(){
+function createDetails() {
     var holder = document.createElement("DETAILS");
     var summary = document.createElement("SUMMARY");
     summary.innerHTML = "Help";
     var paragraph = document.createElement("P");
     holder.appendChild(summary);
     holder.appendChild(paragraph);
-
 }
