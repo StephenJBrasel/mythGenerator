@@ -7,7 +7,7 @@ This is a student project on procedurally generating myths built in Javascript/H
 Look at the Notes. 
 
 /*TODO*/
-Implementation: 
+Implementation: [![Alt text](https://img.youtube.com/vi/VID/0.jpg)](https://www.youtube.com/watch?v=VID)
 
 /*TODO*/
 Credits:
