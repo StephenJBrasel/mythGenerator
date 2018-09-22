@@ -12,39 +12,216 @@
 
 var grammar = [];
 var url = 'https://api.datamuse.com/';
+var words = 'words?'
 var JSONViewTextArea;
 var x = 0;
 var elementNumber = 0; //Used to keep track of how many elements are in a grammar when generating new elements
 var totalGrammarAmount = 4;
 var data = [
     myth = {
-        "origin": [],
+        "origin": [
+            "#[#setFantasyLevel#][#setCharacters#]story#"
+        ],
+        "setCharacters": [
+            "[#setHero#][monster:#monsterRaces#]",
+            // "[#setHero#][#setVillain#]",
+            // "[#setFamilies#]"
+        ],
+        "setFantasyLevel": [
+            "[npcRaces:human][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", //none - Native American Folklore
+            "[npcRaces:#humanRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", //little - Judaism
+            "[npcRaces:#fantasticRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", //some - Buddhism
+            "[npcRaces:#fantasyRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]", //more - Tolkien
+            "[npcRaces:#ridiculousRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]", //most - Lego Universe meets Horror Universe.
+        ],
+        "setHero": [
+            "[#setHeroGender#][heroRace:#npcRaces#][heroPet:#petRaces#]",
+        ],
+        "setHeroGender": [
+            "[heroGender:female][#setHeroFemalePronouns#][heroName:#femaleNames#]",
+            "[heroGender:female][#setHeroFemalePronouns#][heroName:#femaleIshNames#]",
+            "[heroGender:male][#setHeroMalePronouns#][heroName:#maleNames#]",
+            "[heroGender:male][#setHeroMalePronouns#][heroName:#maleIshNames#]",
+        ],
+        "setHeroFemalePronouns": [
+            "[heroThey:she][heroThem:her][heroTheir:her][heroTheirs:hers]"
+        ],
+        "setHeroMalePronouns": [
+            "[heroThey:he][heroThem:him][heroTheir:his][heroTheirs:his]"
+        ],
+        "setHeroAndrogynousPronouns": [
+            "[heroThey:it][heroThem:it][heroTheir:its][heroTheirs:its]"
+        ],
+        "femaleIshNames": [
+            "#femaleNames",
+            "#androgynousNames#"
+        ],
+        "maleIshNames": [
+            "#maleNames#",
+            "#androgynousNames#"
+        ],
+        "maleNames": [
+            "Steve",
+            "Daniel",
+            "Terry",
+            "Jake"
+        ],
+        "femaleNames": [
+            "Susan",
+            "Emma",
+            "Mary",
+            "Abby"
+        ],
+        "androgynousNames": [
+            "Ash",
+            "Reese",
+            "Skyler",
+            "Robbie"
+        ],
+        "humanRaces": [
+            "scandinavian",
+            "african",
+            "texan",
+            "floridian",
+            "indian",
+            "native American",
+            "asian"
+        ],
+        "fantasticRaces": [
+            "#humanRaces#",
+            "ape-men"
+        ],
+        "fantasyRaces": [
+            "#humanRaces#",
+            "elf",
+            "dwarf"
+        ],
+        "ridiculousRaces": [
+            "#fantasyRaces#",
+            "#monsterTypes#",
+        ],
+        "monsterTypes": [
+            '#undeadMonster#',
+            '#dragonMonster#',
+            '#WereMonster#'
+        ],
+        // "intelligentEvilOccupation": [
+        //     'bandit',
+        //     'outlaw',
+        //     'thug',
+        //     'assassin',
+        //     'warlord'
+        // ],
+        "undeadMonster": [
+            'zombie',
+            'ghoul',
+            'ghost',
+            'wight',
+            'wraith',
+            'lich'],
+        "animalSmall": [
+            '#petAnimalSmall#',
+            'lizard',
+            'spider',
+            'bee'
+        ],
+        "petAnimalSmall": [
+            'rat',
+            'cat',
+            'dog',
+            'rabbit',
+            'fox'
+        ],
+        "animalLarge": [
+            '#terrestrialAnimalLarge#',
+            '#aquaticAnimalLarge#',
+        ],
+        "terrestrialAnimalLarge": [
+            '#forestAnimalLarge#',
+            '#jungleAnimalLarge'
+        ],
+        "aquaticAnimalLarge": [
+            "whale",
+            "squid",
+            "octopus",
+            "#sharkTypes#"
+        ],
+        "sharkTypes": [
+            "shark",
+            "#sharkDescriptor# shark",
+            "megalodon"
+        ],
+        "sharkDescriptor": [
+            "great white",
+            "tiger",
+            "hammerhead",
+            "whale"
+        ],
+        "forestAnimalLarge": [
+            'wolf',
+            'puma',
+            'bear'
+        ],
+        "jungleAnimalLarge": [
+            'gorilla',
+            'tiger',
+            'jaguar',
+            '#reptileAnimalLarge#'
+        ],
+        "reptileAnimalLarge": [
+            'crocodile',
+            'alligator',
+            '#snake#',
+        ],
+        "snake": [
+            'python',
+            'cobra',
+            'anaconda'
+        ],
+        "WereMonster": [
+            'were#animalLarge#',
+            'vampire'
+        ],
+        "dragonMonster": [
+            'dragon',
+            'wyvern',
+            'drake',
+            'wyrm',
+            'hydra',
+            'serpent'
+        ],
+        "prologue": [],
+        "beginning": [
+            "In the beginning there was #heroGender.a# #heroRace.capitalize# named #heroName#.",
+            "Since time immemorial, there has been #heroGender.a# #heroRace.capitalize# named #heroName#.",
+            "Once upon a time there was #heroGender.a# #heroRace.capitalize# named #heroName#.",
+            "In the void there was #heroGender.a# #heroRace.capitalize# named #heroName#."
+        ],
+        "middle": [
+            "#conflict#"
+        ],
+        "fought": [
+            "fought",
+            "wrestled",
+            "battled"
+        ],
+        "conflict": [
+            "#heroName.capitalize# #fought# with #monster.a#.",
+            "#heroName.capitalize# #fought# with #monster.s#."
+        ],
+        "end": [
+            "\nFin.",
+            "\nThe End.",
+            "\nAnd then, after many years, you were born."
+        ],
+        "epilogue": [],
+        "story": [
+            "#prologue# #beginning# #middle# #end# #epilogue#",
+        ]
     },
     hero = {
-        "name": [
-            "Cheri",
-            "Fox",
-            "Morgana",
-            "Jedoo",
-            "Brick",
-            "Shadow",
-            "Krox",
-            "Urga",
-            "Zelph"
-        ],
-        "story": [
-            "#hero.capitalize# was a great #occupation#, and this song tells of #heroTheir# adventure. #hero.capitalize# #didStuff#, then #heroThey# #didStuff#, then #heroThey# went home to read a book."
-        ],
-        "monster": [
-            "dragon",
-            "ogre",
-            "witch",
-            "wizard",
-            "goblin",
-            "golem",
-            "giant",
-            "sphinx",
-            "warlord"
+        "origin": [
+            "#[#setSingluarPronouns#][#setOccupation#][hero:#name#]story#"
         ],
         "setSingluarPronouns": ["[heroThey:she][heroThem:her][heroTheir:her][heroTheirs:hers]",
             "[heroThey:he][heroThem:him][heroTheir:his][heroTheirs:his]"
@@ -60,6 +237,7 @@ var data = [
             "folded dough," +
             "made croissants," +
             "iced a cake]",
+
             "[occupation:warrior]" +
             "[didStuff:" +
             "fought #monster.a#," +
@@ -67,8 +245,30 @@ var data = [
             "battled #monster.a#," +
             "defeated #monster.a#]"
         ],
-        "origin": [
-            "#[#setSingluarPronouns#][#setOccupation#][hero:#name#]story#"
+        "monster": [
+            "dragon",
+            "ogre",
+            "witch",
+            "wizard",
+            "goblin",
+            "golem",
+            "giant",
+            "sphinx",
+            "warlord"
+        ],
+        "name": [
+            "Cheri",
+            "Fox",
+            "Morgana",
+            "Jedoo",
+            "Brick",
+            "Shadow",
+            "Krox",
+            "Urga",
+            "Zelph"
+        ],
+        "story": [
+            "#hero.capitalize# was a great #occupation#, and this song tells of #heroTheir# adventure. #hero.capitalize# #didStuff#, then #heroThey# #didStuff#, then #heroThey# went home to read a book."
         ]
     },
     tale = {
@@ -348,7 +548,40 @@ var data = [
             'serpent']
     },
     quest = {
-        "origin": [],
+        "origin": [
+            "#[#setQuestType#][#setQuestFailCases#]quest#"
+        ],
+        "setQuestType": [
+            "#travel#", //go to [place]
+            "#escort#", //#travel# #interact# #guard#
+            "#deliver#", //bring [noun] to [person] at [place] [in [place]]
+            "#fetch#", //get [thing:noun] from [place] and bring #thing# to [other place]
+
+            "#destroy#", //destroy something
+            '#guard#', //guard something, and if threat: destroy threat.
+
+            // "#skill#", //perform [action] using only N skill(s).
+            // "#interact#", //perform [action] with N [person]
+            // "#combo#", //perform [action] N times. (e.g. for N [person], for N [place])
+            "#craft#", //make [thing]
+
+            "#solve#", //bypass or complete puzzle/test
+        ],
+        "travel": [],
+        "escort": [],
+        "deliver": [],
+        "fetch": [],
+
+        "destroy": [],
+        "guard": [],
+
+        // "skill":[],
+        // "interact":[],
+        // "combo":[],
+        "craft": [],
+        "solve": [],
+
+        "quest": []
     }
 ]
 var currentDirectory;
@@ -362,30 +595,45 @@ function setup() {
     //Establish the grammar.
     resetWorkingData();
     fillViews();
-
-    url += 'words?ml=ringing+in+the+ears&max=4';
-    loadJSON(url, obtainedData);
+    changeCurrentView();
+    searchDataMuseSimple();
+    makeAPISwitchToggle();
 }
 
-function buildSelector(){
-    var selector = document.getElementById("grammarSelect");
-    clearClassesOrTags('.GrammarTypeOptions');
-    var option;
-    for (var i = 0; i < data.length; i++){
-        option = document.createElement("OPTION");
-        option.classList.add("GrammarTypeOptions");
-        option.value = i;
-        option.innerHTML = JSON.stringify(data[i]);
-        selector.appendChild(option);
-    }
-    option = document.createElement("OPTION");
-    option.classList.add("GrammarTypeOptions");
-    option.value="new";
-    option.innerHTML="New";
-    selector.appendChild(option);
+function makeAPISwitchToggle() {
+    var detailsSearch = document.getElementById("Word Search Area");
+    var APISwitch = document.getElementById("APISwitchUserMode");
+    detailsSearch.addEventListener("toggle", function (evt) {
+        if (detailsSearch.open) {
+            /* the element was toggled open */
+            APISwitch.style.visibility = "visible";
+        }
+        else {
+            /* the element was toggled closed */
+            APISwitch.style.visibility = "hidden";
+        }
+    }, false);
 }
 
-function changeCurrentView(){
+// function buildSelector(){
+//     var selector = document.getElementById("grammarSelect");
+//     clearClassesOrTags('.GrammarTypeOptions');
+//     var option;
+//     for (var i = 0; i < data.length; i++){
+//         option = document.createElement("OPTION");
+//         option.classList.add("GrammarTypeOptions");
+//         option.value = i;
+//         option.innerHTML = JSON.stringify(data[i]);
+//         selector.appendChild(option);
+//     }
+//     option = document.createElement("OPTION");
+//     option.classList.add("GrammarTypeOptions");
+//     option.value="new";
+//     option.innerHTML="New";
+//     selector.appendChild(option);
+// }
+
+function changeCurrentView() {
     hideAllViews();
     var viewSelector = document.getElementById("viewSelect");
     var selectedValue = viewSelector.value;
@@ -407,9 +655,9 @@ function changeCurrentDirectory() {
     if (isNum) {
         currentDirectory = data[selectedValue];
     } else {
-        var newGrammar = 
-        dataKey = "data" + totalGrammarAmount;
-        data[totalGrammarAmount] = {[dataKey]:[]}
+        var newGrammar =
+            dataKey = "data" + totalGrammarAmount;
+        data[totalGrammarAmount] = { [dataKey]: [] }
         currentDirectory = data[totalGrammarAmount++]; //?
     }
     deleteAllGrammarElements(false);
@@ -458,16 +706,18 @@ function clearClassesOrTags(search = '.generatedText') {
     for (var i = 0; i < elements.length; i++) {
         elements[i].remove();
     }
+    if (search == '.generatedText') {
+        document.getElementById('clearAll').style.visibility = "hidden";
+    }
 }
 
 function generate() {
     var expansion = grammar.flatten('#origin#');
+    document.getElementById('clearAll').style.visibility = "visible";
     newParagraph(expansion);
 }
 
 function makeElementView(InputText = "", AreaText = "") {
-    elementDivision = document.getElementById("elements");
-
     newDiv = document.createElement("DIV");
     newDiv.classList.add("elementView");
     var id = ("element" + elementNumber++);
@@ -494,7 +744,7 @@ function makeElementView(InputText = "", AreaText = "") {
     newDiv.appendChild(newTextArea);
     newDiv.appendChild(deleteButton);
 
-    elementDivision.appendChild(newDiv);
+    document.getElementById("elements").appendChild(newDiv);
 }
 
 function deleteAllGrammarElements(modifyCurrentDirectory = "true") {
@@ -521,23 +771,90 @@ function newParagraph(value) {
     var holder = document.createElement("P");
     var par = document.createTextNode(value);
     holder.appendChild(par);
+
     var r = floor(random(100, 255));
     var g = floor(random(150, 255));
     var b = floor(random(200, 255));
     holder.setAttribute('style', 'background-color:rgb(' + r + ',' + g + ',' + b + ');');
+
     holder.classList.add('generatedText');
     holder.setAttribute("contenteditable", "true");
     document.body.appendChild(holder);
 }
 
+function switchUserMode() {
+    var text = document.getElementById("APISwitchUserMode");
+    var APIAdvanced = document.getElementById("dataMuseAPIAdvanced");
+    var APISimple = document.getElementById("dataMuseAPISimple");
+    if (text.innerHTML == 'Advanced') {
+        text.innerHTML = 'Simple';
+        APIAdvanced.style.display = "block";
+        APISimple.style.display = "none";
+    } else if (text.innerHTML == 'Simple') {
+        text.innerHTML = 'Advanced';
+        APIAdvanced.style.display = "none";
+        APISimple.style.display = "block";
+    }
+}
+
+function searchDataMuse() {
+    var query = url + words;
+    var doQuery = false;
+    var priorConstraint = false;
+
+    var ml = document.getElementById("dataMuseSearchBoxml").value;
+    if (ml != "" && ml != null) {
+        query += "ml=" + ml;
+        doQuery = true;
+        priorConstraint = true;
+    }
+    var sl = document.getElementById("dataMuseSearchBoxsl").value;
+    if (sl != "" && sl != null) {
+        if (priorConstraint) {
+            query += "&";
+        }
+        query += "sl=" + sl;
+        doQuery = true;
+        priorConstraint = true;
+    }
+    var sp = document.getElementById("dataMuseSearchBoxsp").value;
+    if (sp != "" && sp != null) {
+        if (priorConstraint) {
+            query += "&";
+        }
+        query += "sp=" + sp;
+        doQuery = true;
+        priorConstraint = true;
+    }
+
+    if (doQuery) {
+        loadJSON(query, obtainedData);
+    }
+}
+
+function searchDataMuseSimple() {
+    var query = url + words;
+    var ml = document.getElementById("dataMuseSearchBox").value;
+    if (ml != "" && ml != null) {
+        query += "ml= " + ml;
+    }
+    loadJSON(query, obtainedData);
+}
+
 function obtainedData(data) {
     // console.log(JSON.stringify(data));
-    var holder = document.createElement("TEXTAREA")
-    const formatter = document.createTextNode(JSON.stringify(data, null, '\t'));
-    holder.appendChild(formatter);
-    holder.rows = 6;
-    holder.classList.add("grammarView");
-    document.body.appendChild(holder);
+    var searchResultsJSON = document.getElementById("searchResultsJSON")
+    var searchResultsWordArray = document.getElementById("searchResultsArray")
+    var fullJSON = JSON.stringify(data, null, '\t');
+    var wordList = [];
+    for (element in data) {
+        var arr = data[element];
+        wordList += ('"' + arr.word + '",\n');
+        // var newString = arr.length === 0 ? "" : '"' + arr['word']('",\n"') + '"';
+        // console.log(arr.word);
+    }
+    searchResultsJSON.value = (fullJSON);
+    searchResultsWordArray.value = (wordList);
     // newParagraph(JSON.stringify(data, null, 3));
     // return data;
 }
