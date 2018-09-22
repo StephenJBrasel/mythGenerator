@@ -14,7 +14,6 @@ var grammar = [];
 var url = 'https://api.datamuse.com/';
 var words = 'words?'
 var JSONViewTextArea;
-var x = 0;
 var elementNumber = 0; //Used to keep track of how many elements are in a grammar when generating new elements
 var totalGrammarAmount = 4;
 var data = [
@@ -23,25 +22,23 @@ var data = [
             "#[#setFantasyLevel#][#setCharacters#]story#"
         ],
         "setCharacters": [
-            "[#setHero#][monster:#monsterRaces#]",
-            // "[#setHero#][#setVillain#]",
-            // "[#setFamilies#]"
+            "[#setHero#][monster:#monsterRaces#]"
         ],
         "setFantasyLevel": [
-            "[npcRaces:human][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", //none - Native American Folklore
-            "[npcRaces:#humanRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", //little - Judaism
-            "[npcRaces:#fantasticRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", //some - Buddhism
-            "[npcRaces:#fantasyRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]", //more - Tolkien
-            "[npcRaces:#ridiculousRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]", //most - Lego Universe meets Horror Universe.
+            "[npcRaces:human][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]",
+            "[npcRaces:#humanRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", 
+            "[npcRaces:#fantasticRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", 
+            "[npcRaces:#fantasyRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]", 
+            "[npcRaces:#ridiculousRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]"
         ],
         "setHero": [
-            "[#setHeroGender#][heroRace:#npcRaces#][heroPet:#petRaces#]",
+            "[#setHeroGender#][heroRace:#npcRaces#][heroPet:#petRaces#]"
         ],
         "setHeroGender": [
             "[heroGender:female][#setHeroFemalePronouns#][heroName:#femaleNames#]",
             "[heroGender:female][#setHeroFemalePronouns#][heroName:#femaleIshNames#]",
             "[heroGender:male][#setHeroMalePronouns#][heroName:#maleNames#]",
-            "[heroGender:male][#setHeroMalePronouns#][heroName:#maleIshNames#]",
+            "[heroGender:male][#setHeroMalePronouns#][heroName:#maleIshNames#]"
         ],
         "setHeroFemalePronouns": [
             "[heroThey:she][heroThem:her][heroTheir:her][heroTheirs:hers]"
@@ -98,7 +95,7 @@ var data = [
         ],
         "ridiculousRaces": [
             "#fantasyRaces#",
-            "#monsterTypes#",
+            "#monsterTypes#"
         ],
         "monsterTypes": [
             '#undeadMonster#',
@@ -118,7 +115,8 @@ var data = [
             'ghost',
             'wight',
             'wraith',
-            'lich'],
+            'lich'
+        ],
         "animalSmall": [
             '#petAnimalSmall#',
             'lizard',
@@ -134,7 +132,7 @@ var data = [
         ],
         "animalLarge": [
             '#terrestrialAnimalLarge#',
-            '#aquaticAnimalLarge#',
+            '#aquaticAnimalLarge#'
         ],
         "terrestrialAnimalLarge": [
             '#forestAnimalLarge#',
@@ -171,7 +169,7 @@ var data = [
         "reptileAnimalLarge": [
             'crocodile',
             'alligator',
-            '#snake#',
+            '#snake#'
         ],
         "snake": [
             'python',
@@ -190,7 +188,17 @@ var data = [
             'hydra',
             'serpent'
         ],
-        "prologue": [],
+        "prologue": [
+            "greetings"
+        ],
+        "greetings":[
+            "Hi#Punctuation#",
+            "Hello#Punctuation#"
+        ],
+        "Punctuation":[
+            ".",
+            "!"
+        ],
         "beginning": [
             "In the beginning there was #heroGender.a# #heroRace.capitalize# named #heroName#.",
             "Since time immemorial, there has been #heroGender.a# #heroRace.capitalize# named #heroName#.",
@@ -214,9 +222,11 @@ var data = [
             "\nThe End.",
             "\nAnd then, after many years, you were born."
         ],
-        "epilogue": [],
+        "epilogue": [
+            "Bye#greetings#"
+        ],
         "story": [
-            "#prologue# #beginning# #middle# #end# #epilogue#",
+            "#prologue# #beginning# #middle# #end# #epilogue#"
         ]
     },
     hero = {
@@ -593,7 +603,7 @@ function setup() {
     currentDirectory = data[0];
     JSONViewTextArea = document.getElementById("JSONViewTextArea");
     //Establish the grammar.
-    resetWorkingData();
+    reCreateGrammar();
     fillViews();
     changeCurrentView();
     searchDataMuseSimple();
@@ -615,24 +625,6 @@ function makeAPISwitchToggle() {
     }, false);
 }
 
-// function buildSelector(){
-//     var selector = document.getElementById("grammarSelect");
-//     clearClassesOrTags('.GrammarTypeOptions');
-//     var option;
-//     for (var i = 0; i < data.length; i++){
-//         option = document.createElement("OPTION");
-//         option.classList.add("GrammarTypeOptions");
-//         option.value = i;
-//         option.innerHTML = JSON.stringify(data[i]);
-//         selector.appendChild(option);
-//     }
-//     option = document.createElement("OPTION");
-//     option.classList.add("GrammarTypeOptions");
-//     option.value="new";
-//     option.innerHTML="New";
-//     selector.appendChild(option);
-// }
-
 function changeCurrentView() {
     hideAllViews();
     var viewSelector = document.getElementById("viewSelect");
@@ -647,11 +639,8 @@ function hideAllViews() {
     }
 }
 
-function changeCurrentDirectory() {
-    var selector = document.getElementById("grammarSelect");
-    var selectedValue = selector.value;
+function changeCurrentSelectedGrammar(selectedValue) {
     var isNum = /^\d+$/.test(selectedValue);
-    console.log(isNum);
     if (isNum) {
         currentDirectory = data[selectedValue];
     } else {
@@ -660,17 +649,17 @@ function changeCurrentDirectory() {
         data[totalGrammarAmount] = { [dataKey]: [] }
         currentDirectory = data[totalGrammarAmount++]; //?
     }
-    deleteAllGrammarElements(false);
-    resetWorkingData();
+    deleteAllGrammarElements(modifyCurrentDirectory=false);
+    reCreateGrammar();
     fillViews();
 }
 
 function fillViews() {
     fillJSONTextArea();
-    fillElements();
+    fillElementViews();
 }
 
-function fillElements() {
+function fillElementViews() {
     for (element in currentDirectory) {
         var arr = currentDirectory[element];
         var newString = arr.length === 0 ? "" : '"' + arr.join('",\n"') + '"';
@@ -685,8 +674,8 @@ function fillJSONTextArea() {
 function resetWorkingDataJSON() { //onblur from JSON textarea
     currentDirectory = JSON.parse(JSONViewTextArea.value);
     deleteAllGrammarElements(false);
-    fillElements();
-    resetWorkingData();
+    fillElementViews();
+    reCreateGrammar();
 }
 
 function resetWorkingDataElements() {
@@ -694,10 +683,10 @@ function resetWorkingDataElements() {
     //set currentDirectory to JSON-parsed elements
     // make new javascript object. populate it.
     // set currentDirectory to object.
-    resetWorkingData();
+    reCreateGrammar();
 }
 
-function resetWorkingData() {
+function reCreateGrammar() {
     grammar = tracery.createGrammar(currentDirectory);
 }
 
@@ -717,6 +706,15 @@ function generate() {
     newParagraph(expansion);
 }
 
+function makeNewElementFromSearch(){
+    var arrayValues = document.getElementById('searchResultsArray').value;
+
+    makeElementView("", arrayValues);
+    document.getElementById("viewSelect").selectedIndex = 1;
+    changeCurrentView();
+    document.getElementById("Views").open = true;
+}
+
 function makeElementView(InputText = "", AreaText = "") {
     newDiv = document.createElement("DIV");
     newDiv.classList.add("elementView");
@@ -727,7 +725,11 @@ function makeElementView(InputText = "", AreaText = "") {
     textInput.type = "text";
     textInput.placeholder = "Element";
     textInput.id = ("input_" + id);
-    textInput.value = InputText;
+    if (InputText == ""){
+        textInput.value = id;
+    } else {
+        textInput.value = InputText;
+    }
 
     newTextArea = document.createElement("TEXTAREA");
     newTextArea.classList.add("grammarView");
@@ -744,6 +746,14 @@ function makeElementView(InputText = "", AreaText = "") {
     newDiv.appendChild(newTextArea);
     newDiv.appendChild(deleteButton);
 
+    // var objString = '{ "' + textInput.value + '": ' + AreaText + '}';
+    // console.log(objString);
+    // var obj = JSON.parse(objString);
+    // console.log(obj);
+
+    // currentDirectory[obj[textInput.value]] = [obj.value];
+
+    fillJSONTextArea();
     document.getElementById("elements").appendChild(newDiv);
 }
 
@@ -799,35 +809,21 @@ function switchUserMode() {
 
 function searchDataMuse() {
     var query = url + words;
-    var doQuery = false;
-    var priorConstraint = false;
+    var queryExists = false;
 
-    var ml = document.getElementById("dataMuseSearchBoxml").value;
-    if (ml != "" && ml != null) {
-        query += "ml=" + ml;
-        doQuery = true;
-        priorConstraint = true;
-    }
-    var sl = document.getElementById("dataMuseSearchBoxsl").value;
-    if (sl != "" && sl != null) {
-        if (priorConstraint) {
-            query += "&";
+    var searchboxes = document.getElementsByClassName("dataMuseSearchAdvanced");
+    for (element in searchboxes){
+        var x = (searchboxes[element].value);
+        if (x != "" && x != null) {
+            if (queryExists) {
+                query += "&";
+            }
+            query += searchboxes[element].placeholder + "=" + x;
+            queryExists = true;
         }
-        query += "sl=" + sl;
-        doQuery = true;
-        priorConstraint = true;
-    }
-    var sp = document.getElementById("dataMuseSearchBoxsp").value;
-    if (sp != "" && sp != null) {
-        if (priorConstraint) {
-            query += "&";
-        }
-        query += "sp=" + sp;
-        doQuery = true;
-        priorConstraint = true;
     }
 
-    if (doQuery) {
+    if (queryExists) {
         loadJSON(query, obtainedData);
     }
 }
@@ -849,12 +845,13 @@ function obtainedData(data) {
     var wordList = [];
     for (element in data) {
         var arr = data[element];
-        wordList += ('"' + arr.word + '",\n');
+        wordList.push(arr.word);
         // var newString = arr.length === 0 ? "" : '"' + arr['word']('",\n"') + '"';
         // console.log(arr.word);
     }
+    var newString = wordList.length === 0 ? "" : '"' + wordList.join('",\n"') + '"';
     searchResultsJSON.value = (fullJSON);
-    searchResultsWordArray.value = (wordList);
+    searchResultsWordArray.value = (newString);
     // newParagraph(JSON.stringify(data, null, 3));
     // return data;
 }
