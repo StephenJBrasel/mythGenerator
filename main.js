@@ -200,10 +200,10 @@ var data = [
             "!"
         ],
         "beginning": [
-            "In the beginning there was #heroGender.a# #heroRace.capitalize# named #heroName#.",
-            "Since time immemorial, there has been #heroGender.a# #heroRace.capitalize# named #heroName#.",
-            "Once upon a time there was #heroGender.a# #heroRace.capitalize# named #heroName#.",
-            "In the void there was #heroGender.a# #heroRace.capitalize# named #heroName#."
+            "in the beginning there was #heroGender.a# #heroRace.capitalize# named #heroName#.",
+            "since time immemorial, there has been #heroGender.a# #heroRace.capitalize# named #heroName#.",
+            "once upon a time there was #heroGender.a# #heroRace.capitalize# named #heroName#.",
+            "in the void there was #heroGender.a# #heroRace.capitalize# named #heroName#."
         ],
         "middle": [
             "#conflict#"
@@ -218,15 +218,16 @@ var data = [
             "#heroName.capitalize# #fought# with #monster.s#."
         ],
         "end": [
-            "\nFin.",
-            "\nThe End.",
-            "\nAnd then, after many years, you were born."
+            "fin.",
+            "the End.",
+            "and then, after many years, you were born."
         ],
         "epilogue": [
-            "Bye#greetings#"
+            "bye#Punctuation#"
         ],
         "story": [
-            "#prologue# #beginning# #middle# #end# #epilogue#"
+            // "#prologue.capitalize# #beginning# #middle# #end# #epilogue.capitalize#",
+            "#beginning.capitalize# #middle.capitalize# #end.capitalize#"
         ]
     },
     hero = {
@@ -559,39 +560,278 @@ var data = [
     },
     quest = {
         "origin": [
-            "#[#setQuestType#][#setQuestFailCases#]quest#"
+            "#[#setQuestAmount#][#setQuestPeople#][#setPlaces#][#setQuestType#]quest#"
+        ],
+        "setQuestAmount":[
+            "[amount:#rangeTwoToTenText#]"
+        ],
+        "rangeTwoToTenText":[
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten"
+        ],
+        "setQuestPeople":[
+            "[person1:#name#][person2:#name#]"
+        ],
+        "name":[
+            "#maleNames#",
+            "#femaleNames#",
+            "#androgynousNames#"
+        ],
+        "femaleIshNames": [
+            "#femaleNames",
+            "#androgynousNames#"
+        ],
+        "maleIshNames": [
+            "#maleNames#",
+            "#androgynousNames#"
+        ],
+        "maleNames": [
+            "Steve",
+            "Daniel",
+            "Terry",
+            "Jake"
+        ],
+        "femaleNames": [
+            "Susan",
+            "Emma",
+            "Mary",
+            "Abby"
+        ],
+        "androgynousNames": [
+            "Ash",
+            "Reese",
+            "Skyler",
+            "Robbie"
+        ],
+        "setPlaces":[
+            "[currentPlace:#placeName#][destination:#placeName#]"
+        ],
+        "placeName":[
+            "#cityModifier# #cityName.capitalize#",
+            "#cityName.capitalize#",
+            "#cityName.capitalize#",
+            "#wondersName#"
+        ],
+        "cityModifier":[
+            "the village of",
+            "the city of",
+        ],
+        "cityName":[
+            "#cityNamePartOne##cityNamePartTwo#"
+        ],
+        "cityNamePartOne":[
+            "river",
+            "haver",
+            "ivar",
+            "midden",
+            "olter",
+            "fen"
+        ],
+        "cityNamePartTwo":[
+            "wood",
+            "stead",
+            "guard",
+            "run", 
+            "lond"
+        ],
+        "wondersName":[
+            "the #environ# of #environModifier#",
+            "the #environ.s# of #environModifier#",
+            "the #environModifier# #environ.s#",
+        ],
+        "environ":[
+            "tree",
+            "cliff",
+            "swamp",
+            "cave",
+            "mountain",
+            "hill",
+            "river",
+            "lake"
+        ],
+        "environModifier":[
+            "life",
+            "souls",
+            "insanity",
+            "power",
+            "purity"
         ],
         "setQuestType": [
-            "#travel#", //go to [place]
-            "#escort#", //#travel# #interact# #guard#
-            "#deliver#", //bring [noun] to [person] at [place] [in [place]]
-            "#fetch#", //get [thing:noun] from [place] and bring #thing# to [other place]
+            "[questType:#travel#]", //go to [place]
+            "[questType:#escort#]", //#travel# #interact# #guard#
+            "[questType:#deliver#]", //bring [noun] to [person] at [place] [in [place]]
+            "[questType:#fetch#]", //get [thing:noun] from [place] and bring #thing# to [other place]
 
-            "#destroy#", //destroy something
-            '#guard#', //guard something, and if threat: destroy threat.
+            "[questType:#destroy#]", //destroy something
+            "[questType:#guard#]", //guard something, and if threat: destroy threat.
 
             // "#skill#", //perform [action] using only N skill(s).
-            // "#interact#", //perform [action] with N [person]
-            // "#combo#", //perform [action] N times. (e.g. for N [person], for N [place])
-            "#craft#", //make [thing]
+            "[questType:#craft#]", //make [thing]
 
-            "#solve#", //bypass or complete puzzle/test
+            "[questType:#solve#]" //bypass or complete puzzle/test
         ],
-        "travel": [],
-        "escort": [],
-        "deliver": [],
-        "fetch": [],
+        "travelVerb":[
+            "go", 
+            "travel",
+            "journey",
+            "venture"
+        ],
+        //amount, person1, person2, currentPlace, destination
+        "travel": [
+            "#travelVerb# #travelDescription#"
+        ],
+        "travelDescription": [
+            "to #destination#",
+            "from #currentPlace# to #destination#",
+            "from #currentPlace.capitalize# to #destination#",
+            "from #currentPlace# to #destination.capitalize#",
+            "from #currentPlace.capitalize# to #destination.capitalize#",
+        ],
+        "escort": [
+            "take #person1# #travelDescription#",
+            "#travel# with #person1#",
+            "take #person1# and #person2# with you when you #travel#",
+            "take #person1# and #person2# #travelDescription#",
+            "#travel# with #person1# and #person2#"
+        ],
 
-        "destroy": [],
-        "guard": [],
-
+        "deliver": [
+            "#deliver# #rangeTwoToTenText# #item.s# to #destination#",
+            "#deliver# #item.a# to #destination#"
+        ],
+        "fetch": [
+            "#get# #rangeTwoToTenText# #item.s# from #destination#"
+        ],
+        "destroy": [
+            "kill #person1#"
+        ],
+        "guard": [
+            "guard #person1#"
+        ],
         // "skill":[],
-        // "interact":[],
-        // "combo":[],
-        "craft": [],
-        "solve": [],
-
-        "quest": []
+        "craft": [
+            "craft #item#"
+        ],
+        "solve": [
+            "do something"
+        ],
+        
+        "item":[
+            "#weapon#",
+            "#armor#",
+            "#potion#",
+            "#book#",
+            "#treasure#"
+        ],
+        "sharpened":[
+            "dull",
+            "sharp",
+            "razor sharp"
+        ],
+        "craftsmanship":[
+            "Fine",
+            "Superior",
+            "Expert",
+            "Legendary",
+            "Mythic"
+        ],
+        "oiled":[
+            "well-oiled",
+            "oiled",
+            "rusty"
+        ],
+        "weaponMaterial":[
+            "iron",
+            "steel",
+            "orcish",
+            "elvish",
+            "adamantine",
+            "demonic",
+            "dragon"
+        ],
+        "weaponType":[
+            "dagger",
+            "sword",
+            "axe",
+            "club",
+            "maul",
+            "longsword",
+            "battle axe",
+            "war hammer"
+        ],
+        "enchantDescription":[
+            "#iceEnchantDescription#",
+            "#fireEnchantDescription#",
+            "#shockEnchantDescription#"
+        ],
+        "iceEnchantDescription":[
+            "frost",
+            "ice",
+            "blizzards"
+        ],
+        "fireEnchantDescription":[
+            "flames",
+            "scorching",
+            "inferno"
+        ],
+        "shockEnchantDescription":[
+            "shocks",
+            "thunder",
+            "lightning"
+        ],
+        "weapon":[ // sharpened craftsmanship oiled poisoned weaponMaterial weaponType enchantDescription
+            "#oiled# #weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
+            "poisoned #weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
+            "#craftsmanship# #weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
+            "#weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
+            "#weaponMaterial# #weaponType#"
+        ],
+        "armor":[ //craftsmanship oiled weaponMaterial
+            "helmet",
+            "chestpiece",
+            "chainmail",
+            "gauntlets",
+            "boots"
+        ],
+        "potion":[
+            "potion of health"
+        ],
+        "book":[
+            "The Bard and the Bee", //The #Occupation# and the #smallAnimal#
+            "An Idiot's Guide to Killing Everyone But The People You Like",
+            "The Tree"
+        ],
+        "treasure":[
+            "gold", 
+            "silver",
+            "copper"
+        ],
+        "deliver":[
+            "deliver",
+            "bring",
+            "present"
+        ],
+        "get":[
+            "get",
+            "bring",
+            "take"
+        ],
+        "find":[
+            "get",
+            "retrieve",
+            "obtain",
+            "find"
+        ],
+        "quest":[
+            "#questType.capitalize#."
+        ],
     }
 ]
 var currentDirectory;
@@ -708,6 +948,7 @@ function generate() {
 
 function makeNewElementFromSearch(){
     var arrayValues = document.getElementById('searchResultsArray').value;
+    console.log(typeof(arrayValues));
 
     makeElementView("", arrayValues);
     document.getElementById("viewSelect").selectedIndex = 1;
@@ -842,6 +1083,8 @@ function obtainedData(data) {
     var searchResultsJSON = document.getElementById("searchResultsJSON")
     var searchResultsWordArray = document.getElementById("searchResultsArray")
     var fullJSON = JSON.stringify(data, null, '\t');
+    searchResultsJSON.value = (fullJSON);
+
     var wordList = [];
     for (element in data) {
         var arr = data[element];
@@ -850,7 +1093,6 @@ function obtainedData(data) {
         // console.log(arr.word);
     }
     var newString = wordList.length === 0 ? "" : '"' + wordList.join('",\n"') + '"';
-    searchResultsJSON.value = (fullJSON);
     searchResultsWordArray.value = (newString);
     // newParagraph(JSON.stringify(data, null, 3));
     // return data;
