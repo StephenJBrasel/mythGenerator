@@ -10,6 +10,7 @@ Implementation: [![Alt text](https://img.youtube.com/vi/VID/0.jpg)](https://www.
 /*TODO*/
 - make new elements appropriately transfigure JSON.
 - constrain datamuse API by part of speech (n, v, adj, adv)
+- in quests, make armorEnchantments.
 
 /*TODO*/
 Credits:

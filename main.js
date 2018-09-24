@@ -560,7 +560,7 @@ var data = [
     },
     quest = {
         "origin": [
-            "#[#setQuestAmount#][#setQuestPeople#][#setPlaces#][#setQuestType#]quest#"
+            "#[#setQuestAmount#][#setQuestPeople#][#setPlaces#][#setDeliverable#][#setCraft#][#setQuestType#]quest#"
         ],
         "setQuestAmount":[
             "[amount:#rangeTwoToTenText#]"
@@ -642,9 +642,9 @@ var data = [
             "lond"
         ],
         "wondersName":[
-            "the #environ# of #environModifier#",
-            "the #environ.s# of #environModifier#",
-            "the #environModifier# #environ.s#",
+            "the #environ.capitalize# of #environModifier.capitalize#",
+            "the #environ.s.capitalize# of #environModifier.capitalize#",
+            "the #environModifier.capitalize# #environ.s.capitalize#",
         ],
         "environ":[
             "tree",
@@ -663,29 +663,49 @@ var data = [
             "power",
             "purity"
         ],
+        "setDeliverable":[
+            "[deliverable:#item#]"
+        ],
+        "setCraft":[
+            "[make:#brewVerb#][craftable:#brewable#]",
+            "[make:#smithVerb#][craftable:#smithable#]",
+            "[make:#enchantVerb#][craftable:#smithable#]"
+        ],
+        "brewVerb":[
+            "brew",
+            "mix",
+            "cook"
+        ],
+        "smithVerb":[
+            "smith",
+            "craft"
+        ],
+        "enchantVerb":[
+            "enchant"
+        ],
         "setQuestType": [
-            "[questType:#travel#]", //go to [place]
-            "[questType:#escort#]", //#travel# #interact# #guard#
-            "[questType:#deliver#]", //bring [noun] to [person] at [place] [in [place]]
-            "[questType:#fetch#]", //get [thing:noun] from [place] and bring #thing# to [other place]
+            "[questType:#travel#][reason:#travelReason#]", //go to [place]
+            "[questType:#escort#][reason:#escortReason#]", //#travel# #interact# #guard#
+            "[questType:#deliver#][reason:#deliverReason#]", //bring [noun] to [person] at [place] [in [place]]
+            "[questType:#fetch#][reason:#fetchReason#]", //get [thing:noun] from [place] and bring #thing# to [other place]
 
-            "[questType:#destroy#]", //destroy something
-            "[questType:#guard#]", //guard something, and if threat: destroy threat.
+            "[questType:#destroy#][reason:#destroyReason#]", //destroy something
+            "[questType:#guard#][reason:#guardReason#]", //guard something, and if threat: destroy threat.
 
-            // "#skill#", //perform [action] using only N skill(s).
-            "[questType:#craft#]", //make [thing]
+            // "[questType:#skill#][reason:#skillReason#]", //perform [action] using only N skill(s).
+            "[questType:#craft#][reason:#craftReason#]", //make [thing]
 
-            "[questType:#solve#]" //bypass or complete puzzle/test
+            "[questType:#solve#][reason:#solveReason#]" //bypass or complete puzzle/test
+        ],
+        //amount(of times), person1, person2, currentPlace, destination, deliverable
+        "travel": [ //quest
+            "#travelVerb# #travelDescription#"
         ],
         "travelVerb":[
             "go", 
             "travel",
             "journey",
             "venture"
-        ],
-        //amount, person1, person2, currentPlace, destination
-        "travel": [
-            "#travelVerb# #travelDescription#"
         ],
         "travelDescription": [
             "to #destination#",
@@ -694,53 +714,67 @@ var data = [
             "from #currentPlace# to #destination.capitalize#",
             "from #currentPlace.capitalize# to #destination.capitalize#",
         ],
-        "escort": [
-            "take #person1# #travelDescription#",
+        "travelReason":[
+            "you need to see #destination#",
+            "#destination# will change your life",
+            "#destination# needs people like you"
+        ],
+        "escort": [ //quest
+            "#get# #person1# #travelDescription#",
             "#travel# with #person1#",
             "take #person1# and #person2# with you when you #travel#",
             "take #person1# and #person2# #travelDescription#",
             "#travel# with #person1# and #person2#"
         ],
-
-        "deliver": [
-            "#deliver# #rangeTwoToTenText# #item.s# to #destination#",
-            "#deliver# #item.a# to #destination#"
+        "escortReason":[
+            "#person1# needs to see the world",
+            "#destination# needs #person1#",
+            "#person1# and #person2# are inseparable",
         ],
-        "fetch": [
-            "#get# #rangeTwoToTenText# #item.s# from #destination#"
+        "deliver": [ //quest
+            "#deliverVerb# #rangeTwoToTenText# #deliverable.s# to #destination#",
+            "#deliverVerb# #deliverable.a# to #destination#"
         ],
-        "destroy": [
-            "kill #person1#"
+        "deliverVerb":[
+            "deliver",
+            "bring",
+            "present"
         ],
-        "guard": [
-            "guard #person1#"
-        ],
-        // "skill":[],
-        "craft": [
-            "craft #item#"
-        ],
-        "solve": [
-            "do something"
-        ],
-        
         "item":[
             "#weapon#",
             "#armor#",
-            "#potion#",
+            "#jewelry#",
+            "#brewable#",
             "#book#",
-            "#treasure#"
+            "#food#"
         ],
-        "sharpened":[
-            "dull",
-            "sharp",
-            "razor sharp"
+        "smithable":[
+            "#unEnchantedWeapon#",
+            "#unEnchantedarmor#",
+            "#jewelry#"
         ],
-        "craftsmanship":[
-            "Fine",
-            "Superior",
-            "Expert",
-            "Legendary",
-            "Mythic"
+        "unEnchantedWeapon":[
+            "#craftsmanship# #weaponMaterial# #weaponType#",
+            "#weaponMaterial# #weaponType#",
+            "#sharpened# #weaponMaterial# #weaponType#",
+            "#sharpened# #weaponType#"
+        ],
+        "unEnchantedarmor":[
+            "#armorType#",
+            "#craftsmanship# #armorType#",
+            "#weaponMaterial# #armorType#",
+            "#craftsmanship# #weaponMaterial# #armorType#"
+        ],
+        "brewable":[
+            "#potion#",
+            "#poison#"
+        ],
+        "weapon":[ // sharpened craftsmanship oiled poisoned weaponMaterial weaponType weaponEnchantDescription
+            "#oiled# #weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
+            "poisoned #weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
+            "#craftsmanship# #weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
+            "#weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
+            "#unEnchantedWeapon#"
         ],
         "oiled":[
             "well-oiled",
@@ -748,13 +782,13 @@ var data = [
             "rusty"
         ],
         "weaponMaterial":[
+            "copper",
             "iron",
             "steel",
-            "orcish",
-            "elvish",
+            "mithril",
             "adamantine",
-            "demonic",
-            "dragon"
+            "obsidian",
+            "titanite"
         ],
         "weaponType":[
             "dagger",
@@ -766,70 +800,316 @@ var data = [
             "battle axe",
             "war hammer"
         ],
-        "enchantDescription":[
-            "#iceEnchantDescription#",
-            "#fireEnchantDescription#",
-            "#shockEnchantDescription#"
+        "weaponEnchantDescription":[
+            "#iceWeaponEnchantDescription#",
+            "#fireWeaponEnchantDescription#",
+            "#shockWeaponEnchantDescription#"
         ],
-        "iceEnchantDescription":[
+        "iceWeaponEnchantDescription":[
             "frost",
             "ice",
             "blizzards"
         ],
-        "fireEnchantDescription":[
+        "fireWeaponEnchantDescription":[
             "flames",
             "scorching",
             "inferno"
         ],
-        "shockEnchantDescription":[
+        "shockWeaponEnchantDescription":[
             "shocks",
             "thunder",
             "lightning"
         ],
-        "weapon":[ // sharpened craftsmanship oiled poisoned weaponMaterial weaponType enchantDescription
-            "#oiled# #weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
-            "poisoned #weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
-            "#craftsmanship# #weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
-            "#weaponMaterial# #weaponType# of #enchantDescription.capitalize#",
-            "#weaponMaterial# #weaponType#"
+        // "weaponStyle":[
+        //     "#cityName#ian",
+        //     "#cityName#",
+        //     // "#placeName#",
+        //     // "#placeName#ian"
+        // ],
+        // "forged":[
+        //     "#race#-forged"
+        // ],
+        // "race":[
+        //     "dwarf",
+        //     "orc",
+        //     "goblin",
+        //     "elf"
+        // ],
+        "craftsmanship":[
+            "Fine",
+            "Superior",
+            "Expert",
+            "Legendary",
+            "Mythic"
         ],
-        "armor":[ //craftsmanship oiled weaponMaterial
+        "sharpened":[
+            "sharp",
+            "keen",
+            "sharpened",
+            "honed",
+            "razor sharp"
+        ],
+        "armor":[ //craftsmanship weaponMaterial
+            "#unEnchantedarmor#"
+        ],
+        "armorType":[
+            "#head#",
+            "#neck#",
+            "#chest#",
+
+            "#shoulders#",
+            "#wrists#",
+            "#hands#",
+            "#fingers#",
+
+            "#waist#",
+
+            "#legs#",
+            "#shins#",
+            "#ankles#",
+            "#feet#"
+        ],
+        "head":[
             "helmet",
-            "chestpiece",
-            "chainmail",
+            "cap",
+            "helm"
+        ],
+        "neck":[
+            "throat guard",
+            "gorget"
+        ],
+        "fullBody":[
+            "chain-mail",
+            "chest plate",
+            "armor"
+        ],
+        "shield":[
+            "shield",
+            "tower shield",
+            "buckler"
+        ],
+        "shoulders":[
+            "pauldrons"
+        ],
+        "wrists":[
+            "wrist-guards"
+        ],
+        "hands":[
             "gauntlets",
+            "gloves"
+        ],
+        "fingers":[
+            "claws"
+        ],
+        "waist":[
+            "belt",
+            "bandolier"
+        ],
+        "legs":[
+            "trousers"
+        ],
+        "shins":[
+            "shin-guards"
+        ],
+        "feet":[
             "boots"
         ],
+        "jewelry":[
+            "necklace",
+            "circlet",
+            "crown",
+            "ring",
+            "bracelet",
+            "anklet"
+        ],
         "potion":[
-            "potion of health"
+            "#brewStrength# #potionDescription# #brewModifier# potion",
+            "#brewStrength# #brewModifier# potion",
+            "#potionDescription# #brewModifier# potion",
+            "#brewModifier# potion"
+        ],
+        "brewStrength":[
+            "weak",
+            "potent"
+        ],
+        "potionDescription":[
+            "restore",
+            "regenerate"
+        ],
+        "brewModifier":[
+            "health",
+            "mana",
+            "spirit",
+            "courage",
+            "stamina"
+        ],
+        "poison":[
+            "#brewStrength# #poisonDescription# #brewModifier# poison",
+            "#brewStrength# #brewModifier# poison",
+            "#poisonDescription# #brewModifier# poison",
+            "#brewModifier# poison"
+        ],
+        "poisonDescription":[
+            "damage",
+            "ravage",
+            "deteriorate"
         ],
         "book":[
             "The Bard and the Bee", //The #Occupation# and the #smallAnimal#
-            "An Idiot's Guide to Killing Everyone But The People You Like",
-            "The Tree"
+            "An Idiot's Guide to Killing Everyone Except For The Sentient Creatures You Like",
+            "The Apple"
         ],
-        "treasure":[
-            "gold", 
-            "silver",
-            "copper"
+        "food":[
+            "#soupContainer# of #soup#",
+            "#starch#",
+            "#fruit#"
         ],
-        "deliver":[
-            "deliver",
-            "bring",
-            "present"
+        "soupContainer":[
+            "bowl",
+            "cup"
+        ],
+        "soup":[
+            "soup",
+            "stew",
+            "broth",
+            "bisque"
+        ],
+        "starch":[
+            "bread"
+        ],
+        "fruit":[
+            "#appleModifier# apple",
+            "banana"
+        ],
+        "appleModifier":[
+            "green",
+            "red",
+            "golden"
+        ],
+        "deliverReason":[
+            "they ordered #deliverable.s# specifically. I'm not sure why. I didn't ask."
+        ],
+        "fetch": [ //quest
+            "#get# #rangeTwoToTenText# #deliverable.s# from #destination#",
+            "#get# #deliverable.a# from #destination#"
         ],
         "get":[
             "get",
             "bring",
             "take"
         ],
-        "find":[
-            "get",
-            "retrieve",
-            "obtain",
-            "find"
+        "fetchReason":[
+            "I'd really like that"
+        ],
+        "destroy": [ //quest
+            "kill #person1#"
+        ],
+        "destroyReason":[
+            "They need to die."
+        ],
+        "guard": [ //quest
+            "guard #person1#",
+            "guard #currentPlace#",
+            "guard the shipment"
+        ],
+        "guardReason":[
+            "#genericReason#"
+        ],
+        // "skill":[],
+        "craft": [ //quest
+            "#make# #craftable.a#",
+            "#make# #rangeTwoToTenText# #craftable.s#"
+        ],
+        "craftReason":[
+            "#genericReason#"
+        ],
+        "solve": [ //quest
+            "#puzzleSolve# the #puzzle# of #currentPlace#",
+            "#puzzleSolve# this #puzzle#"
+        ],
+        "puzzleSolve":[
+            "solve",
+            "figure out",
+            "think your way through"
+        ],
+        "puzzle":[
+            "#maze#"
+        ],
+        "maze":[
+            "maze",
+            "labyrinth"
+        ],
+        "solveReason":[
+            "#genericReason#"
+        ],
+        "genericReason":[
+            "#excuse#",
+            "#need#",
+            "#need# and #excuse#",
+            "#excuse# and #need#"
+        ],
+        "need":[
+            "#presentNeed#",
+            "#pastNeed#",
+            "#futureNeed#"
+        ],
+        "presentNeed":[
+            "#it# needs to be done", //need
+            "#it# has to be done"
+        ],
+        "pastNeed":[
+            "#it# should have been done ages ago"
+        ],
+        "futureNeed":[
+            "#it# #futureNeedTense# by #season#'s end",
+            "#it# #futureNeedTense# partway through #season#",
+            "#it# #futureNeedTense# by the end of #season#",
+            "#it# #futureNeedTense# by the middle of #season#",
+            "#it# #futureNeedTense# by the beginning of #season#"
+        ],
+        "it":[
+            "it",
+            "this"
+        ],
+        "futureNeedTense":[
+            "will need to happen",
+            "has to happen",
+            "should be done"
+        ],
+        "season":[
+            "winter",
+            "summer",
+            "spring",
+            "autumn"
+        ],
+        "excuse":[
+            "#sicknessExcuse#",
+            "#ageExcuse#",
+            "#busyExcuse#",
+            "#fearExcuse#",
+            "#importanceExcuse#"
+        ],
+        "sicknessExcuse":[
+            "I've been vomiting all night and I'm too sick",
+            "I'm too sick",
+            "I need someone to take care of it until I can get over this sickness",
+            "I need to get over this sickness"
+        ],
+        "fearExcuse":[
+            "lately I've been too scared to move. I'm anxious all the time"
+        ],
+        "ageExcuse":[
+            "I would do it myself if I were a few decades younger", //age
+            "These old bones are too frail to handle it"
+        ],
+        "busyExcuse":[
+            "I need someone that's not busy" //busy-ness
+        ],
+        "importanceExcuse":[
+            "I need to oversee the other operations" //social order
         ],
         "quest":[
+            "#questType.capitalize#. #reason.capitalize#.",
             "#questType.capitalize#."
         ],
     }
