@@ -987,6 +987,7 @@ var data = [
             "golden"
         ],
         "deliverReason":[
+            "#deliverable#",
             "they ordered #deliverable.s# specifically. I'm not sure why. I didn't ask."
         ],
         "fetch": [ //quest
@@ -999,21 +1000,43 @@ var data = [
             "take"
         ],
         "fetchReason":[
+            "We need it",
             "I'd really like that"
         ],
         "destroy": [ //quest
             "kill #person1#"
         ],
         "destroyReason":[
-            "They need to die."
+            "#genericReason#",
+            "if you have a problem with that, tell me now",
+            "I want them dead",
+            "make them suffer",
+            "they need to die"
         ],
         "guard": [ //quest
-            "guard #person1#",
+            "[reason:#guardPersonReason#]guard #person1#",
             "guard #currentPlace#",
             "guard the shipment"
         ],
         "guardReason":[
             "#genericReason#"
+        ],
+        "guardPersonReason":[
+            "#person1# can't handle #simpleTask# so they need to be #guardVerb#",
+            "#genericReason#"
+        ],
+        "guardVerb":[
+            "babied",
+            "watched",
+            "looked after"
+        ],
+        "simpleTask":[
+            "sticking their head in a river",
+            "holding a weapon without hurting themselves",
+            "the simplest task",
+            "cleaning up their own mess",
+            "cutting butter with a hot knife",
+            "staying still and being quiet for more than a minute"
         ],
         // "skill":[],
         "craft": [ //quest
