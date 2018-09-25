@@ -42,6 +42,17 @@
             height: auto;
         }
 
+        .searchResultsView{
+            z-index: auto;
+            position: relative;
+            line-height: 17.1429px;
+            font-size: 12px;
+            transition: none 0s ease 0s;
+            background: transparent !important;
+            width: 100%;
+            height: auto;
+        }
+
         .elementView {
             display: flex;
             align-items: center;
@@ -50,11 +61,12 @@
         #searchDiv {
             display: flex;
             align-items: center;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            top: 0;
-            left: 0;
+        }
+
+        .generatedContent{
+            overflow-x:hidden;
+            overflow-y:visible;
+            height:500px;
         }
     </style>
 </head>
@@ -65,29 +77,41 @@
         <div id="content">
             Story:
             <select id="grammarSelect" onchange="changeCurrentSelectedGrammar(this.value)">
-                <option value="0">Myth</option>
+                <option value="0" selected>Myth</option>
                 <option value="1">Hero</option>
                 <option value="2">Tale</option>
                 <option value="3">Generic Quest</option>
             </select>
             <button id="generate" onclick="generate()">generate</button>
+            <select id="generatedAmountNumBox" type="number" placeholder="max" onblur="changeGenerateAmount(this.value)">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10" selected>10</option>
+            </select>
             <button id="clearAll" onclick="clearClassesOrTags()" style="visibility: hidden;">clear</button>
 
             <br>
             <details id="Views">
-                <summary>
-                    View:
-                    <select id="viewSelect" onchange="changeCurrentView()">
-                        <option value="viewJSON">JSON</option>
-                        <option value="viewElements" selected>Elements</option>
+                <summary>Edit Generator
+                    <select id="viewSelect" title="Change how you view the generator properties." onchange="changeCurrentView()">
+                        <option value="viewJSON">JSON View</option>
+                        <option value="viewElements" selected>Elements View</option>
                     </select>
                 </summary>
                 <div class="view" id="viewJSON">
                     <textarea class="grammarView" id="JSONViewTextArea" spellcheck="false" onblur="resetWorkingDataJSON()"
                         value="{}" cols="150" rows="6" style="z-index: auto; position: relative; line-height: 17.1429px; font-size: 12px; transition: none 0s ease 0s; background: transparent !important; width:100%; height: auto;">
+
                 </textarea>
                 </div>
-                <div class="view" id="viewElements">
+                <div class="view generatedContent" id="viewElements">
                     <div id="elements">
                         <!-- <div class="elementView" id="element0">
                             <input type="text" placeholder="Element"> : <textarea class="grammarView"></textarea>
@@ -99,60 +123,75 @@
             </details>
             <details id="Word Search Area">
                 <summary>Get Words
+                    <select id="viewSelectSearchResults" title="Change how you view your search results." onchange="changeSearchResultsView()">
+                        <option value="searchResultsJSON">JSON View</option>
+                        <option value="searchResultsArray" selected>Word List View</option>
+                    </select>
                     <button id="APISwitchUserMode" onclick="switchUserMode()" style="visibility: hidden;">Advanced</button>
                 </summary>
                 <div id="searchDiv">
                     <div id="dataMuseAPI">
-                        <div id="dataMuseAPIAdvanced" style="display: none;">
+                        <div id="dataMuseAPIAdvanced" onchange="searchDataMuse()" style="display: none;">
                             Words that <br>
-                            mean: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxml" type="text" placeholder="ml" onblur="searchDataMuse()"
-                                value=""><br>
-                            sound like: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxsl" type="text" placeholder="sl" onblur="searchDataMuse()"
-                                value=""><br>
-                            are spelled like: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxsp" type="text" placeholder="sp" onblur="searchDataMuse()"
-                                value=""><br>
+                            mean: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxml" type="text"
+                                placeholder="ml" onblur="searchDataMuse()" value=""><br>
+                            sound like: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxsl" type="text"
+                                placeholder="sl" onblur="searchDataMuse()" value=""><br>
+                            are spelled like: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxsp" type="text"
+                                placeholder="sp" onblur="searchDataMuse()" value=""><br>
                             <details>
                                 <summary>are related by:</summary>
                                 Popular nouns modified by the given adjective: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_jja"
                                     type="text" placeholder="rel_jja" onblur="searchDataMuse()" value=""><br>
-                                Popular adjectives used to modify the given noun: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_jjb"
-                                    type="text" placeholder="rel_jjb" onblur="searchDataMuse()" value=""><br>
-                                Synonyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_syn" type="text" placeholder="rel_syn" onblur="searchDataMuse()"
+                                Popular adjectives used to modify the given noun: <input class="dataMuseSearchAdvanced"
+                                    id="dataMuseSearchBoxrel_jjb" type="text" placeholder="rel_jjb" onblur="searchDataMuse()"
                                     value=""><br>
-                                Associated with in the same piece of text: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_trg" type="text"
-                                    placeholder="rel_trg" onblur="searchDataMuse()" value=""><br>
-                                Antonyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_ant" type="text" placeholder="rel_ant" onblur="searchDataMuse()"
-                                    value=""><br>
-                                Hypernyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_spc" type="text" placeholder="rel_spc"
-                                    onblur="searchDataMuse()" value=""><br>
-                                Hyponyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_gen" type="text" placeholder="rel_gen" onblur="searchDataMuse()"
-                                    value=""><br>
-                                Holonyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_com" type="text" placeholder="rel_com" onblur="searchDataMuse()"
-                                    value=""><br>
-                                Meronyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_par" type="text" placeholder="rel_par" onblur="searchDataMuse()"
-                                    value=""><br>
-                                Frequent followers: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_bga" type="text" placeholder="rel_bga"
-                                    onblur="searchDataMuse()" value=""><br>
-                                Frequent predecessors: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_bgb" type="text" placeholder="rel_bgb"
-                                    onblur="searchDataMuse()" value=""><br>
-                                Perfect Rhymes: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_rhy" type="text" placeholder="rel_rhy"
-                                    onblur="searchDataMuse()" value=""><br>
-                                Approximate Rhymes: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_nry" type="text" placeholder="rel_nry"
-                                    onblur="searchDataMuse()" value=""><br>
-                                Homophones: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_hom" type="text" placeholder="rel_hom"
-                                    onblur="searchDataMuse()" value=""><br>
-                                Consonant Match: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_cns" type="text" placeholder="rel_cns"
-                                    onblur="searchDataMuse()" value=""><br>
+                                Synonyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_syn" type="text"
+                                    placeholder="rel_syn" onblur="searchDataMuse()" value=""><br>
+                                Associated with in the same piece of text: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_trg"
+                                    type="text" placeholder="rel_trg" onblur="searchDataMuse()" value=""><br>
+                                Antonyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_ant" type="text"
+                                    placeholder="rel_ant" onblur="searchDataMuse()" value=""><br>
+                                Hypernyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_spc" type="text"
+                                    placeholder="rel_spc" onblur="searchDataMuse()" value=""><br>
+                                Hyponyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_gen" type="text"
+                                    placeholder="rel_gen" onblur="searchDataMuse()" value=""><br>
+                                Holonyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_com" type="text"
+                                    placeholder="rel_com" onblur="searchDataMuse()" value=""><br>
+                                Meronyms: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_par" type="text"
+                                    placeholder="rel_par" onblur="searchDataMuse()" value=""><br>
+                                Frequent followers: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_bga"
+                                    type="text" placeholder="rel_bga" onblur="searchDataMuse()" value=""><br>
+                                Frequent predecessors: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_bgb"
+                                    type="text" placeholder="rel_bgb" onblur="searchDataMuse()" value=""><br>
+                                Perfect Rhymes: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_rhy"
+                                    type="text" placeholder="rel_rhy" onblur="searchDataMuse()" value=""><br>
+                                Approximate Rhymes: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_nry"
+                                    type="text" placeholder="rel_nry" onblur="searchDataMuse()" value=""><br>
+                                Homophones: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_hom" type="text"
+                                    placeholder="rel_hom" onblur="searchDataMuse()" value=""><br>
+                                Consonant Match: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrel_cns"
+                                    type="text" placeholder="rel_cns" onblur="searchDataMuse()" value=""><br>
                             </details>
-                            are on the topic: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxtopic" type="text" placeholder="topic" onblur="searchDataMuse()"
-                                value=""><br>
-                            are found to the right of: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxlc" type="text" placeholder="lc"
-                                onblur="searchDataMuse()" value=""><br>
-                            are found to the left of: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrc" type="text" placeholder="rc"
-                                onblur="searchDataMuse()" value=""><br>
+                            are on the topic: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxtopic" type="text"
+                                placeholder="topic" onblur="searchDataMuse()" value=""><br>
+                            are found to the right of: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxlc"
+                                type="text" placeholder="lc" onblur="searchDataMuse()" value=""><br>
+                            are found to the left of: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxrc"
+                                type="text" placeholder="rc" onblur="searchDataMuse()" value=""><br>
                             <br>
-                            Max number of results: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxmax" type="number" placeholder="max"
-                                onblur="searchDataMuse()" value="4"><br>
+                            Max number of results: <input class="dataMuseSearchAdvanced" id="dataMuseSearchBoxmax" type="number"
+                                placeholder="max" onblur="searchDataMuse()" value="100"><br>
+                            <details>
+                                <summary>Parts of Speech in Results:</summary>
+                                <form onchange="changeVisiblePartsOfSpeech()">
+                                    <input type="checkbox" id="constraintPOSANY" onchange="POSANYchecked(this.checked)" checked value="Any"> Any<br>
+                                    <input type="checkbox" class="constraintPOSCheckbox" checked value="n"> Nouns<br>
+                                    <input type="checkbox" class="constraintPOSCheckbox" checked value="v"> Verbs<br>
+                                    <input type="checkbox" class="constraintPOSCheckbox" checked value="adj">Adjectives<br>
+                                    <input type="checkbox" class="constraintPOSCheckbox" checked value="adv"> Adverbs
+                                </form>
+                            </details>
 
                         </div>
                         <div id="dataMuseAPISimple" style="display: block;">
@@ -161,11 +200,12 @@
                         </div>
 
                     </div> : <div id="dataMuseResults">
-                        <textarea id="searchResultsJSON" placeholder="Results in JSON View" style="hover: 'Results in JSON View';"></textarea>
-                        <textarea id="searchResultsArray" placeholder="Results in Word Array View"></textarea>
+                        <textarea class="searchResultsView" id="searchResultsJSON" placeholder="Results in JSON View"></textarea>
+                        <textarea class="searchResultsView" id="searchResultsArray" placeholder="Results in Word Array View"></textarea>
                     </div>
                 </div>
-                <button id="makeNewElement" onclick="makeNewElementFromSearch()" style="display: none;">Add This Element</button>
+                <button id="makeNewElement" onclick="makeNewElementFromSearch()" style="display: none;">Add This
+                    Element</button>
                 <details id="Word Search Help Area">
                     <summary>Word Search Tips</summary>
                     <table bgcolor="#339966" border="0" cellspacing="0" width="95%" align="center">
@@ -262,6 +302,8 @@
                     </table>
                 </details>
             </details>
+        </div>
+        <div class="generatedContent" id="generatedGrammars">
         </div>
     </div>
 </body>

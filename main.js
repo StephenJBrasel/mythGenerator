@@ -11,11 +11,13 @@
 // var fs = require('fs');
 
 var grammar = [];
+var partsOfSpeech = [];
 var url = 'https://api.datamuse.com/';
 var words = 'words?'
 var JSONViewTextArea;
 var elementNumber = 0; //Used to keep track of how many elements are in a grammar when generating new elements
 var totalGrammarAmount = 4;
+var generateAmount = 10;
 var data = [
     myth = {
         "origin": [
@@ -26,9 +28,9 @@ var data = [
         ],
         "setFantasyLevel": [
             "[npcRaces:human][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]",
-            "[npcRaces:#humanRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", 
-            "[npcRaces:#fantasticRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]", 
-            "[npcRaces:#fantasyRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]", 
+            "[npcRaces:#humanRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]",
+            "[npcRaces:#fantasticRaces#][monsterRaces:#terrestrialAnimalLarge#][petRaces:#petAnimalSmall#]",
+            "[npcRaces:#fantasyRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]",
             "[npcRaces:#ridiculousRaces#][monsterRaces:#monsterTypes#][petRaces:#petAnimalSmall#]"
         ],
         "setHero": [
@@ -191,11 +193,11 @@ var data = [
         "prologue": [
             "greetings"
         ],
-        "greetings":[
+        "greetings": [
             "Hi#Punctuation#",
             "Hello#Punctuation#"
         ],
-        "Punctuation":[
+        "Punctuation": [
             ".",
             "!"
         ],
@@ -560,12 +562,13 @@ var data = [
     },
     quest = {
         "origin": [
+            "#plea# #[#setQuestAmount#][#setQuestPeople#][#setPlaces#][#setDeliverable#][#setCraft#][#setQuestType#]quest#",
             "#[#setQuestAmount#][#setQuestPeople#][#setPlaces#][#setDeliverable#][#setCraft#][#setQuestType#]quest#"
         ],
-        "setQuestAmount":[
+        "setQuestAmount": [
             "[amount:#rangeTwoToTenText#]"
         ],
-        "rangeTwoToTenText":[
+        "rangeTwoToTenText": [
             "two",
             "three",
             "four",
@@ -576,10 +579,10 @@ var data = [
             "nine",
             "ten"
         ],
-        "setQuestPeople":[
+        "setQuestPeople": [
             "[person1:#name#][person2:#name#]"
         ],
-        "name":[
+        "name": [
             "#maleNames#",
             "#femaleNames#",
             "#androgynousNames#"
@@ -610,23 +613,23 @@ var data = [
             "Skyler",
             "Robbie"
         ],
-        "setPlaces":[
+        "setPlaces": [
             "[currentPlace:#placeName#][destination:#placeName#]"
         ],
-        "placeName":[
+        "placeName": [
             "#cityModifier# #cityName.capitalize#",
             "#cityName.capitalize#",
             "#cityName.capitalize#",
             "#wondersName#"
         ],
-        "cityModifier":[
+        "cityModifier": [
             "the village of",
             "the city of",
         ],
-        "cityName":[
+        "cityName": [
             "#cityNamePartOne##cityNamePartTwo#"
         ],
-        "cityNamePartOne":[
+        "cityNamePartOne": [
             "river",
             "haver",
             "ivar",
@@ -634,19 +637,19 @@ var data = [
             "olter",
             "fen"
         ],
-        "cityNamePartTwo":[
+        "cityNamePartTwo": [
             "wood",
             "stead",
             "guard",
-            "run", 
+            "run",
             "lond"
         ],
-        "wondersName":[
+        "wondersName": [
             "the #environ.capitalize# of #environModifier.capitalize#",
             "the #environ.s.capitalize# of #environModifier.capitalize#",
             "the #environModifier.capitalize# #environ.s.capitalize#",
         ],
-        "environ":[
+        "environ": [
             "tree",
             "cliff",
             "swamp",
@@ -656,31 +659,31 @@ var data = [
             "river",
             "lake"
         ],
-        "environModifier":[
+        "environModifier": [
             "life",
             "souls",
             "insanity",
             "power",
             "purity"
         ],
-        "setDeliverable":[
+        "setDeliverable": [
             "[deliverable:#item#]"
         ],
-        "setCraft":[
+        "setCraft": [
             "[make:#brewVerb#][craftable:#brewable#]",
             "[make:#smithVerb#][craftable:#smithable#]",
             "[make:#enchantVerb#][craftable:#smithable#]"
         ],
-        "brewVerb":[
+        "brewVerb": [
             "brew",
             "mix",
             "cook"
         ],
-        "smithVerb":[
+        "smithVerb": [
             "smith",
             "craft"
         ],
-        "enchantVerb":[
+        "enchantVerb": [
             "enchant"
         ],
         "setQuestType": [
@@ -690,7 +693,7 @@ var data = [
             "[questType:#fetch#][reason:#fetchReason#]", //get [thing:noun] from [place] and bring #thing# to [other place]
 
             "[questType:#destroy#][reason:#destroyReason#]", //destroy something
-            "[questType:#guard#][reason:#guardReason#]", //guard something, and if threat: destroy threat.
+            "#setGuardQuestType#", //guard something, and if threat: destroy threat.
 
             // "[questType:#skill#][reason:#skillReason#]", //perform [action] using only N skill(s).
             "[questType:#craft#][reason:#craftReason#]", //make [thing]
@@ -701,8 +704,8 @@ var data = [
         "travel": [ //quest
             "#travelVerb# #travelDescription#"
         ],
-        "travelVerb":[
-            "go", 
+        "travelVerb": [
+            "go",
             "travel",
             "journey",
             "venture"
@@ -714,7 +717,7 @@ var data = [
             "from #currentPlace# to #destination.capitalize#",
             "from #currentPlace.capitalize# to #destination.capitalize#",
         ],
-        "travelReason":[
+        "travelReason": [
             "you need to see #destination#",
             "#destination# will change your life",
             "#destination# needs people like you"
@@ -726,7 +729,7 @@ var data = [
             "take #person1# and #person2# #travelDescription#",
             "#travel# with #person1# and #person2#"
         ],
-        "escortReason":[
+        "escortReason": [
             "#person1# needs to see the world",
             "#destination# needs #person1#",
             "#person1# and #person2# are inseparable",
@@ -735,12 +738,12 @@ var data = [
             "#deliverVerb# #rangeTwoToTenText# #deliverable.s# to #destination#",
             "#deliverVerb# #deliverable.a# to #destination#"
         ],
-        "deliverVerb":[
+        "deliverVerb": [
             "deliver",
             "bring",
             "present"
         ],
-        "item":[
+        "item": [
             "#weapon#",
             "#armor#",
             "#jewelry#",
@@ -748,40 +751,40 @@ var data = [
             "#book#",
             "#food#"
         ],
-        "smithable":[
+        "smithable": [
             "#unEnchantedWeapon#",
             "#unEnchantedarmor#",
             "#jewelry#"
         ],
-        "unEnchantedWeapon":[
+        "unEnchantedWeapon": [
             "#craftsmanship# #weaponMaterial# #weaponType#",
             "#weaponMaterial# #weaponType#",
             "#sharpened# #weaponMaterial# #weaponType#",
             "#sharpened# #weaponType#"
         ],
-        "unEnchantedarmor":[
+        "unEnchantedarmor": [
             "#armorType#",
             "#craftsmanship# #armorType#",
             "#weaponMaterial# #armorType#",
             "#craftsmanship# #weaponMaterial# #armorType#"
         ],
-        "brewable":[
+        "brewable": [
             "#potion#",
             "#poison#"
         ],
-        "weapon":[ // sharpened craftsmanship oiled poisoned weaponMaterial weaponType weaponEnchantDescription
+        "weapon": [ // sharpened craftsmanship oiled poisoned weaponMaterial weaponType weaponEnchantDescription
             "#oiled# #weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
             "poisoned #weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
             "#craftsmanship# #weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
             "#weaponMaterial# #weaponType# of #weaponEnchantDescription.capitalize#",
             "#unEnchantedWeapon#"
         ],
-        "oiled":[
+        "oiled": [
             "well-oiled",
             "oiled",
             "rusty"
         ],
-        "weaponMaterial":[
+        "weaponMaterial": [
             "copper",
             "iron",
             "steel",
@@ -790,7 +793,7 @@ var data = [
             "obsidian",
             "titanite"
         ],
-        "weaponType":[
+        "weaponType": [
             "dagger",
             "sword",
             "axe",
@@ -800,22 +803,22 @@ var data = [
             "battle axe",
             "war hammer"
         ],
-        "weaponEnchantDescription":[
+        "weaponEnchantDescription": [
             "#iceWeaponEnchantDescription#",
             "#fireWeaponEnchantDescription#",
             "#shockWeaponEnchantDescription#"
         ],
-        "iceWeaponEnchantDescription":[
+        "iceWeaponEnchantDescription": [
             "frost",
             "ice",
             "blizzards"
         ],
-        "fireWeaponEnchantDescription":[
+        "fireWeaponEnchantDescription": [
             "flames",
             "scorching",
             "inferno"
         ],
-        "shockWeaponEnchantDescription":[
+        "shockWeaponEnchantDescription": [
             "shocks",
             "thunder",
             "lightning"
@@ -835,27 +838,27 @@ var data = [
         //     "goblin",
         //     "elf"
         // ],
-        "craftsmanship":[
+        "craftsmanship": [
             "Fine",
             "Superior",
             "Expert",
             "Legendary",
             "Mythic"
         ],
-        "sharpened":[
+        "sharpened": [
             "sharp",
             "keen",
             "sharpened",
             "honed",
             "razor sharp"
         ],
-        "armor":[ //craftsmanship weaponMaterial
+        "armor": [ //craftsmanship weaponMaterial
             "#unEnchantedarmor#"
         ],
-        "armorType":[
+        "armorType": [
             "#head#",
             "#neck#",
-            "#chest#",
+            "#fullBody#",
 
             "#shoulders#",
             "#wrists#",
@@ -869,52 +872,52 @@ var data = [
             "#ankles#",
             "#feet#"
         ],
-        "head":[
+        "head": [
             "helmet",
             "cap",
             "helm"
         ],
-        "neck":[
+        "neck": [
             "throat guard",
             "gorget"
         ],
-        "fullBody":[
+        "fullBody": [
             "chain-mail",
             "chest plate",
             "armor"
         ],
-        "shield":[
+        "shield": [
             "shield",
             "tower shield",
             "buckler"
         ],
-        "shoulders":[
+        "shoulders": [
             "pauldrons"
         ],
-        "wrists":[
+        "wrists": [
             "wrist-guards"
         ],
-        "hands":[
+        "hands": [
             "gauntlets",
             "gloves"
         ],
-        "fingers":[
+        "fingers": [
             "claws"
         ],
-        "waist":[
+        "waist": [
             "belt",
             "bandolier"
         ],
-        "legs":[
+        "legs": [
             "trousers"
         ],
-        "shins":[
+        "shins": [
             "shin-guards"
         ],
-        "feet":[
+        "feet": [
             "boots"
         ],
-        "jewelry":[
+        "jewelry": [
             "necklace",
             "circlet",
             "crown",
@@ -922,71 +925,71 @@ var data = [
             "bracelet",
             "anklet"
         ],
-        "potion":[
+        "potion": [
             "#brewStrength# #potionDescription# #brewModifier# potion",
             "#brewStrength# #brewModifier# potion",
             "#potionDescription# #brewModifier# potion",
             "#brewModifier# potion"
         ],
-        "brewStrength":[
+        "brewStrength": [
             "weak",
             "potent"
         ],
-        "potionDescription":[
+        "potionDescription": [
             "restore",
             "regenerate"
         ],
-        "brewModifier":[
+        "brewModifier": [
             "health",
             "mana",
             "spirit",
             "courage",
             "stamina"
         ],
-        "poison":[
+        "poison": [
             "#brewStrength# #poisonDescription# #brewModifier# poison",
             "#brewStrength# #brewModifier# poison",
             "#poisonDescription# #brewModifier# poison",
             "#brewModifier# poison"
         ],
-        "poisonDescription":[
+        "poisonDescription": [
             "damage",
             "ravage",
             "deteriorate"
         ],
-        "book":[
+        "book": [
             "The Bard and the Bee", //The #Occupation# and the #smallAnimal#
             "An Idiot's Guide to Killing Everyone Except For The Sentient Creatures You Like",
             "The Apple"
         ],
-        "food":[
+        "food": [
             "#soupContainer# of #soup#",
             "#starch#",
             "#fruit#"
         ],
-        "soupContainer":[
+        "soupContainer": [
             "bowl",
             "cup"
         ],
-        "soup":[
+        "soup": [
             "soup",
             "stew",
             "broth",
             "bisque"
         ],
-        "starch":[
+        "starch": [
             "bread"
         ],
-        "fruit":[
+        "fruit": [
             "#appleModifier# apple",
             "banana"
         ],
-        "appleModifier":[
+        "appleModifier": [
             "green",
             "red",
             "golden"
         ],
-        "deliverReason":[
+        "deliverReason": [
             "#deliverable#",
             "they ordered #deliverable.s# specifically. I'm not sure why. I didn't ask."
         ],
@@ -994,43 +997,87 @@ var data = [
             "#get# #rangeTwoToTenText# #deliverable.s# from #destination#",
             "#get# #deliverable.a# from #destination#"
         ],
-        "get":[
+        "get": [
             "get",
             "bring",
             "take"
         ],
-        "fetchReason":[
+        "fetchReason": [
             "We need it",
             "I'd really like that"
         ],
         "destroy": [ //quest
             "kill #person1#"
         ],
-        "destroyReason":[
+        "destroyReason": [
             "#genericReason#",
             "if you have a problem with that, tell me now",
             "I want them dead",
             "make them suffer",
             "they need to die"
         ],
+        "setGuardQuestType": [
+            "[reason:#genericPresentReason#]#guard#",
+            "[questType:#guardPerson#][reason:#guardPersonReason#]",
+            "[questType:#guardPlace#][reason:#guardPlaceReason#]",
+            "[questType:#guardThing#][reason:#guardThingReason#]"
+        ],
         "guard": [ //quest
-            "[reason:#guardPersonReason#]guard #person1#",
-            "guard #currentPlace#",
-            "guard the shipment"
+            "[questType:#guardPerson#]",
+            "[questType:#guardPlace#]",
+            "[questType:#guardThing#]"
         ],
-        "guardReason":[
-            "#genericReason#"
+        "guardReason": [
+            "#genericPresentReason#"
         ],
-        "guardPersonReason":[
-            "#person1# can't handle #simpleTask# so they need to be #guardVerb#",
-            "#genericReason#"
+        "guardPersonReason": [
+            "#person1# can't handle #simpleTask# so they need to be #guardedVerb#",
+            "#genericPresentReason#"
         ],
-        "guardVerb":[
-            "babied",
-            "watched",
-            "looked after"
+        "guardPerson": [
+            "#guardVerb# #person1#",
+            "#guardVerb# #person1#",
         ],
-        "simpleTask":[
+        "guardPlace": [
+            "#guardVerb# #currentPlace#"
+        ],
+        "guardPlaceReason": [
+            "there have been reports of #intelligentEvilOccupation.s#",
+            "#intelligentEvilOccupation.capitalize.s are roaming the area",
+            "The army took most of the warriors",
+            "#genericPresentReason#"
+        ],
+        "intelligentEvilOccupation": [
+            'bandit',
+            'outlaw',
+            'thug',
+            'assassin',
+            'warlord'
+        ],
+        "guardThing": [
+            "#guardVerb# the #thingToBeGuarded#"
+        ],
+        "guardThingReason": [
+            "there have been reports of #intelligentEvilOccupation.s#",
+            "#intelligentEvilOccupation.capitalize.s# are roaming the area",
+            "#intelligentEvilOccupation.capitalize.s# are notorious near #currentPlace#",
+            "we don't want to lose any #craftable.s#",
+            "#genericPresentReason#"
+        ],
+        "thingToBeGuarded": [
+            "caravan",
+            "ship",
+            "shipment",
+            "warehouse",
+            "storeroom"
+        ],
+        "guardVerb": [
+            "guard",
+            "protect",
+            "watch",
+            "defend"
+        ],
+        "simpleTask": [
             "sticking their head in a river",
             "holding a weapon without hurting themselves",
             "the simplest task",
@@ -1038,100 +1085,169 @@ var data = [
             "cutting butter with a hot knife",
             "staying still and being quiet for more than a minute"
         ],
+        "guardedVerb": [
+            "babied",
+            "watched",
+            "looked after"
+        ],
         // "skill":[],
         "craft": [ //quest
             "#make# #craftable.a#",
             "#make# #rangeTwoToTenText# #craftable.s#"
         ],
-        "craftReason":[
+        "craftReason": [
             "#genericReason#"
         ],
         "solve": [ //quest
             "#puzzleSolve# the #puzzle# of #currentPlace#",
             "#puzzleSolve# this #puzzle#"
         ],
-        "puzzleSolve":[
+        "puzzleSolve": [
             "solve",
             "figure out",
             "think your way through"
         ],
-        "puzzle":[
+        "puzzle": [
             "#maze#"
         ],
-        "maze":[
+        "maze": [
             "maze",
             "labyrinth"
         ],
-        "solveReason":[
+        "solveReason": [
             "#genericReason#"
         ],
-        "genericReason":[
+        "genericReason": [
             "#excuse#",
             "#need#",
             "#need# and #excuse#",
             "#excuse# and #need#"
         ],
-        "need":[
+        "genericPresentOrFutureReason": [
+            "#excuse#",
+            "#presentOrFutureNeed#",
+            "#presentOrFutureNeed# and #excuse#",
+            "#excuse# and #presentOrFutureNeed#"
+        ],
+        "genericPresentReason": [
+            "#excuse#",
+            "#presentNeed#",
+            "#presentNeed# and #excuse#",
+            "#excuse# and #presentNeed#",
+        ],
+        // "until":[
+        //     "#neededBy# the #season#",
+        //     "#neededBy# the #timeOfDay#",
+        //     "#neededBy# the #calendarMeasure#"
+        // ],
+        // "calendarMeasure":[
+        //     "hour",
+        //     "day",
+        //     "week",
+        //     "month"
+        // ],
+        // "neededBy":[
+        //     "You'll only need to do it #timeConstraint#",
+        //     "I need someone #timeConstraint#"
+        // ],
+        // "timeConstraint":[
+        //     "until the end of",
+        //     "for"
+        // ],
+        "need": [
             "#presentNeed#",
             "#pastNeed#",
             "#futureNeed#"
         ],
-        "presentNeed":[
+        "presentOrFutureNeed": [
+            "#presentNeed#",
+            "#futureNeed#"
+        ],
+        "presentNeed": [
             "#it# needs to be done", //need
             "#it# has to be done"
         ],
-        "pastNeed":[
+        "pastNeed": [
             "#it# should have been done ages ago"
         ],
-        "futureNeed":[
+        "futureNeed": [
             "#it# #futureNeedTense# by #season#'s end",
             "#it# #futureNeedTense# partway through #season#",
             "#it# #futureNeedTense# by the end of #season#",
             "#it# #futureNeedTense# by the middle of #season#",
             "#it# #futureNeedTense# by the beginning of #season#"
         ],
-        "it":[
+        "it": [
             "it",
             "this"
         ],
-        "futureNeedTense":[
+        "futureNeedTense": [
             "will need to happen",
             "has to happen",
             "should be done"
         ],
-        "season":[
+        "season": [
             "winter",
             "summer",
             "spring",
             "autumn"
         ],
-        "excuse":[
+        "excuse": [
             "#sicknessExcuse#",
             "#ageExcuse#",
             "#busyExcuse#",
             "#fearExcuse#",
             "#importanceExcuse#"
         ],
-        "sicknessExcuse":[
-            "I've been vomiting all night and I'm too sick",
+        "sicknessExcuse": [
+            "I've been #sicknessSymptom# all #timeOfDay# so I'm too sick",
+            "I've been #sicknessSymptom# all #timeOfDay#",
             "I'm too sick",
-            "I need someone to take care of it until I can get over this sickness",
             "I need to get over this sickness"
         ],
-        "fearExcuse":[
+        "timeOfDay": [
+            "night",
+            "day",
+            "morning",
+            "evening"
+        ],
+        "sickness": [
+            "#diarrheaModifier# diarrhea",
+            "diarrhea",
+            "fever",
+            "flu"
+        ],
+        "diarrheaModifier": [
+            "explosive",
+            "bloody",
+            "runny",
+            "projectile"
+        ],
+        "sicknessSymptom": [
+            "vomiting",
+            "feverish",
+            // "waking up and fainting",
+            "having seizures"
+        ],
+        "fearExcuse": [
             "lately I've been too scared to move. I'm anxious all the time"
         ],
-        "ageExcuse":[
+        "ageExcuse": [
             "I would do it myself if I were a few decades younger", //age
             "These old bones are too frail to handle it"
         ],
-        "busyExcuse":[
+        "busyExcuse": [
             "I need someone that's not busy" //busy-ness
         ],
-        "importanceExcuse":[
+        "importanceExcuse": [
             "I need to oversee the other operations" //social order
         ],
-        "quest":[
+        "plea": [
+            "Please, ",
+            "I'm begging you, ",
+            "Help me, please! "
+        ],
+        "quest": [
             "#questType.capitalize#. #reason.capitalize#.",
             "#questType.capitalize#."
         ],
@@ -1143,15 +1259,45 @@ function setup() {
     noCanvas();
     //Set a "working" directory so we don't inadvertently delete everything while testing.
     // buildSelector();
-    currentDirectory = data[0];
+    currentDirectory = data[document.getElementById("grammarSelect").value];
     JSONViewTextArea = document.getElementById("JSONViewTextArea");
     //Establish the grammar.
     reCreateGrammar();
     fillViews();
-    changeCurrentView();
-    searchDataMuseSimple();
+
     makeAPISwitchToggle();
+
+    changeCurrentView();
+    changeSearchResultsView();
+
+    loadPartsOfSpeech();
 }
+
+function loadPartsOfSpeech() {
+    var POSAnyCheckbox = document.getElementById("constraintPOSANY");
+    partsOfSpeech = [];
+    var constraintsByPOS = document.getElementsByClassName("constraintPOSCheckbox");
+    for (element in constraintsByPOS) {
+        var toBePushed = constraintsByPOS[element].value
+        if (constraintsByPOS[element].checked == true && toBePushed != null && toBePushed != "") {
+            partsOfSpeech.push(toBePushed);
+        } else if (constraintsByPOS[element].checked == false) {
+            POSAnyCheckbox.checked = false;
+        }
+    }
+    if (partsOfSpeech.length == 4){
+        POSAnyCheckbox.checked = true;
+    }
+}
+
+function changeVisiblePartsOfSpeech() {
+    loadPartsOfSpeech();
+    var data = JSON.parse(document.getElementById("searchResultsJSON").value);
+    //TODO: make new JSON objects that constrain to Parts of Speech selected by the user.
+
+    obtainedData(data);
+}
+
 
 function makeAPISwitchToggle() {
     var detailsSearch = document.getElementById("Word Search Area");
@@ -1168,15 +1314,30 @@ function makeAPISwitchToggle() {
     }, false);
 }
 
-function changeCurrentView() {
-    hideAllViews();
-    var viewSelector = document.getElementById("viewSelect");
+function POSANYchecked(POSANYIsChecked) {
+    console.log(POSANYIsChecked);
+    if (POSANYIsChecked) {
+        var POSconstraints = document.getElementsByClassName("constraintPOSCheckbox");
+        for (checkbox in POSconstraints) {
+            console.log(checkbox);
+            POSconstraints[checkbox].checked = true;
+        }
+    }
+}
+
+function changeCurrentView(classID = "view", elementID = "viewSelect") {
+    hideAllViews(classID);
+    var viewSelector = document.getElementById(elementID);
     var selectedValue = viewSelector.value;
     document.getElementById(selectedValue).style.display = "block";
 }
 
-function hideAllViews() {
-    var elements = document.getElementsByClassName("view");
+function changeSearchResultsView() {
+    changeCurrentView("searchResultsView", "viewSelectSearchResults");
+}
+
+function hideAllViews(value = "view") {
+    var elements = document.getElementsByClassName(value);
     for (var i = 0; i < elements.length; i++) {
         elements[i].style.display = "none";
     }
@@ -1192,7 +1353,7 @@ function changeCurrentSelectedGrammar(selectedValue) {
         data[totalGrammarAmount] = { [dataKey]: [] }
         currentDirectory = data[totalGrammarAmount++]; //?
     }
-    deleteAllGrammarElements(modifyCurrentDirectory=false);
+    deleteAllGrammarElements(modifyCurrentDirectory = false);
     reCreateGrammar();
     fillViews();
 }
@@ -1244,14 +1405,25 @@ function clearClassesOrTags(search = '.generatedText') {
 }
 
 function generate() {
-    var expansion = grammar.flatten('#origin#');
-    document.getElementById('clearAll').style.visibility = "visible";
-    newParagraph(expansion);
+    for (var i = 0; i < generateAmount; i++) {
+        var expansion = grammar.flatten('#origin#');
+        document.getElementById('clearAll').style.visibility = "visible";
+        newParagraph(expansion);
+    }
+    scrollToBottom('generatedGrammars');
+}
+function scrollToBottom(element = 'generatedGrammars') {
+    var elem = document.getElementById(element);
+    elem.scrollTop = elem.scrollHeight;
 }
 
-function makeNewElementFromSearch(){
+function changeGenerateAmount(value) {
+    generateAmount = value;
+}
+
+function makeNewElementFromSearch() {
     var arrayValues = document.getElementById('searchResultsArray').value;
-    console.log(typeof(arrayValues));
+    console.log(typeof (arrayValues));
 
     makeElementView("", arrayValues);
     document.getElementById("viewSelect").selectedIndex = 1;
@@ -1269,7 +1441,7 @@ function makeElementView(InputText = "", AreaText = "") {
     textInput.type = "text";
     textInput.placeholder = "Element";
     textInput.id = ("input_" + id);
-    if (InputText == ""){
+    if (InputText == "") {
         textInput.value = id;
     } else {
         textInput.value = InputText;
@@ -1333,7 +1505,7 @@ function newParagraph(value) {
 
     holder.classList.add('generatedText');
     holder.setAttribute("contenteditable", "true");
-    document.body.appendChild(holder);
+    document.getElementById("generatedGrammars").appendChild(holder);
 }
 
 function switchUserMode() {
@@ -1356,7 +1528,7 @@ function searchDataMuse() {
     var queryExists = false;
 
     var searchboxes = document.getElementsByClassName("dataMuseSearchAdvanced");
-    for (element in searchboxes){
+    for (element in searchboxes) {
         var x = (searchboxes[element].value);
         if (x != "" && x != null) {
             if (queryExists) {
@@ -1385,15 +1557,57 @@ function obtainedData(data) {
     // console.log(JSON.stringify(data));
     var searchResultsJSON = document.getElementById("searchResultsJSON")
     var searchResultsWordArray = document.getElementById("searchResultsArray")
+    //TODO: make new JSON objects that constrain to Parts of Speech selected by the user.
+    // console.log("Starting length: " + Object.keys(data).length);
+    var broken = false;
+
+    if (document.getElementById("APISwitchUserMode").innerHTML == "Simple") {
+        // console.log("Advanced Mode");
+        if (document.getElementById("constraintPOSANY").checked) {
+            broken = true;
+        } else {
+            for (element in data) {
+                constraintSatisfied = false;
+                if (data[element] == null) {
+                    continue;
+                }
+                if (data[element].hasOwnProperty("tags")) {
+                    // console.log(data[element].tags.toString());
+                    for (var i = 0; i < data[element].tags.length; i++) {
+                        for (var j = 0; j < partsOfSpeech.length; j++) {
+                            if (data[element].tags[i] == partsOfSpeech[j]) {
+                                constraintSatisfied = true;
+                                break;
+                            }
+                        }
+                        if (constraintSatisfied) {
+                            break;
+                        }
+                    }
+                    if (!constraintSatisfied) {
+                        delete data[element];
+                    }
+                } else {
+                    // console.log("Does not have tags: " + data[element].toString());
+                    delete data[element];
+                }
+            }
+        }
+    }
+    console.log(broken);
+    // console.log("Finished length: " + Object.keys(data).length);
+
     var fullJSON = JSON.stringify(data, null, '\t');
     searchResultsJSON.value = (fullJSON);
 
     var wordList = [];
     for (element in data) {
         var arr = data[element];
-        wordList.push(arr.word);
-        // var newString = arr.length === 0 ? "" : '"' + arr['word']('",\n"') + '"';
-        // console.log(arr.word);
+        if (arr != null) {
+            wordList.push(arr.word);
+            // var newString = arr.length === 0 ? "" : '"' + arr['word']('",\n"') + '"';
+            // console.log(arr.word);
+        }
     }
     var newString = wordList.length === 0 ? "" : '"' + wordList.join('",\n"') + '"';
     searchResultsWordArray.value = (newString);
